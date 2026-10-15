@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anteprima — Ideology</title>
+<meta name="description" content="Anteprima del piano editoriale. Ideology, ideology.it">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="src/css/tokens.css">
+<link rel="stylesheet" href="src/css/client.css">
+</head>
+<body>
+
+<div id="cl-root"></div>
+
+<div class="modal-bg" id="modal-bg"></div>
+<div class="cl-viewer" id="cl-viewer"></div>
+<div class="toasts" id="toasts"></div>
+
+<!-- The client bundle. None of the studio's modules are here:
+     no editor, no planner, no client registry, no backup. Just
+     shared reference data, shared UI plumbing, the data contract
+     and the page itself. -->
+<script src="src/js/00-dates.js"></script>
+<script src="src/js/00-platforms.js"></script>
+<script src="src/js/01-core.js"></script>
+<script src="src/data/demo.js"></script>
+<script src="src/js/30-client-data.js"></script>
+<script src="src/js/31-client-app.js"></script>
+</body>
+</html>

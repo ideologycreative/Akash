@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anteprima — Ideology</title>
+<meta name="description" content="Anteprima del piano editoriale. Ideology, ideology.it">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+/* src/css/tokens.css */
+/* ============================================================
+   Ideology — design tokens
+   Colour rule: the interface is warm-neutral. Saturated colour
+   is reserved for approval state and nothing else, so a glance
+   at the grid reads as status, never as decoration.
+   ============================================================ */
+
+:root {
+  /* surfaces */
+  --paper:      #FBFAF8;
+  --paper-2:    #F3F1ED;
+  --panel:      #FFFFFF;
+  --panel-2:    #FAF9F7;
+  --overlay:    rgba(20,20,24,.46);
+
+  /* ink */
+  --ink:        #16161A;
+  --ink-2:      #4C4C56;
+  --ink-3:      #8A8A93;
+  --ink-4:      #B4B3B8;
+
+  /* structure */
+  --rule:       #E5E2DC;
+  --rule-2:     #D4D0C8;
+
+  /* brand — used only for selection and the wordmark */
+  --cobalt:     #1D3FD8;
+  --cobalt-ink: #142C97;
+  --cobalt-sub: #E9EDFC;
+
+  /* approval states */
+  --st-bozza:        #8B8B95;
+  --st-bozza-sub:    #EDECEA;
+  --st-revisione:    #C2410C;
+  --st-revisione-sub:#FCECE2;
+  --st-approvare:    #9A6B00;
+  --st-approvare-sub:#FBF1D9;
+  --st-approvato:    #0E7A4A;
+  --st-approvato-sub:#E0F2E9;
+  --st-pubblicato:   #44556B;
+  --st-pubblicato-sub:#E9EDF1;
+
+  /* ugc states */
+  --ugc-idea:    #8B8B95;
+  --ugc-brief:   #9A6B00;
+  --ugc-girato:  #1D3FD8;
+  --ugc-consegna:#0E7A4A;
+
+  /* type */
+  --font: 'Schibsted Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --fs-xs:  10.5px;
+  --fs-sm:  11.5px;
+  --fs-md:  13px;
+  --fs-lg:  15px;
+  --fs-xl:  19px;
+  --fs-2xl: 26px;
+
+  /* geometry */
+  --r-cell: 10px;
+  --r-ui:   7px;
+  --r-pill: 999px;
+  --bar-h:  52px;
+  --tab-h:  42px;
+
+  /* motion */
+  --t: 140ms cubic-bezier(.2,.7,.3,1);
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #0F0F12;
+    --paper-2:    #16161A;
+    --panel:      #17171B;
+    --panel-2:    #1D1D22;
+    --overlay:    rgba(0,0,0,.66);
+    --ink:        #F2F1EE;
+    --ink-2:      #B9B8BD;
+    --ink-3:      #85848C;
+    --ink-4:      #5C5B63;
+    --rule:       #2A2A31;
+    --rule-2:     #3A3A43;
+    --cobalt:     #7C8DFF;
+    --cobalt-ink: #AEB9FF;
+    --cobalt-sub: #1E2142;
+    --st-bozza:        #9A99A3;
+    --st-bozza-sub:    #26262C;
+    --st-revisione:    #F0834E;
+    --st-revisione-sub:#331C12;
+    --st-approvare:    #D9A520;
+    --st-approvare-sub:#2E2510;
+    --st-approvato:    #3FBE83;
+    --st-approvato-sub:#102B20;
+    --st-pubblicato:   #8FA6C0;
+    --st-pubblicato-sub:#1A222C;
+    --ugc-idea:    #9A99A3;
+    --ugc-brief:   #D9A520;
+    --ugc-girato:  #7C8DFF;
+    --ugc-consegna:#3FBE83;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:      #0F0F12;
+  --paper-2:    #16161A;
+  --panel:      #17171B;
+  --panel-2:    #1D1D22;
+  --overlay:    rgba(0,0,0,.66);
+  --ink:        #F2F1EE;
+  --ink-2:      #B9B8BD;
+  --ink-3:      #85848C;
+  --ink-4:      #5C5B63;
+  --rule:       #2A2A31;
+  --rule-2:     #3A3A43;
+  --cobalt:     #7C8DFF;
+  --cobalt-ink: #AEB9FF;
+  --cobalt-sub: #1E2142;
+  --st-bozza:        #9A99A3;
+  --st-bozza-sub:    #26262C;
+  --st-revisione:    #F0834E;
+  --st-revisione-sub:#331C12;
+  --st-approvare:    #D9A520;
+  --st-approvare-sub:#2E2510;
+  --st-approvato:    #3FBE83;
+  --st-approvato-sub:#102B20;
+  --st-pubblicato:   #8FA6C0;
+  --st-pubblicato-sub:#1A222C;
+  --ugc-idea:    #9A99A3;
+  --ugc-brief:   #D9A520;
+  --ugc-girato:  #7C8DFF;
+  --ugc-consegna:#3FBE83;
+}
+</style>
+<style>
+/* src/css/client.css */
+/* ============================================================
+   Ideology — the client link
+
+   Calmer than the studio tool: wider margins, larger type, one
+   column of attention. The client is reading, not operating, and
+   half of them will be on a phone — so the actions sit under the
+   content they belong to, big enough to hit with a thumb.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ── Header ────────────────────────────────────────────── */
+
+.cl-head {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule);
+}
+.cl-head-top {
+  max-width: 1120px; margin: 0 auto;
+  display: flex; align-items: center; gap: 13px;
+  padding: 16px 20px 14px;
+}
+.cl-mark {
+  width: 30px; height: 30px; border-radius: 8px; flex: 0 0 auto;
+  background: var(--ink); color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+}
+.cl-who h1 {
+  margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.035em; line-height: 1.15;
+}
+.cl-who p { margin: 1px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.cl-accent { height: 3px; }
+
+.cl-head-rows {
+  max-width: 1120px; margin: 0 auto;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 11px 20px;
+}
+.cl-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.cl-pill {
+  padding: 5px 13px; border-radius: 999px;
+  border: 1px solid var(--rule-2); background: transparent;
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+  transition: background .14s, color .14s, border-color .14s;
+}
+.cl-pill:hover { border-color: var(--ink-4); color: var(--ink); }
+.cl-pill[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.cl-sel {
+  appearance: none; -webkit-appearance: none;
+  padding: 6px 30px 6px 12px; border-radius: 8px;
+  border: 1px solid var(--rule-2); background: var(--panel);
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
+                    linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 14px, calc(100% - 11px) 14px;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+
+/* ── Main ──────────────────────────────────────────────── */
+
+.cl-main { max-width: 1120px; margin: 0 auto; padding: 20px 20px 70px; }
+
+.cl-summary { margin-bottom: 20px; }
+.cl-ask {
+  background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 13px; padding: 17px 19px;
+}
+.cl-ask h2 {
+  margin: 0 0 5px; font-size: 17px; font-weight: 700; letter-spacing: -.025em;
+  display: flex; align-items: center; gap: 8px;
+}
+.cl-ask p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; max-width: 62ch; }
+.cl-ask.done { border-color: var(--st-approvato); background: var(--st-approvato-sub); }
+.cl-ask.done h2 { color: var(--st-approvato); }
+.cl-ask.done p { color: var(--ink-2); }
+
+.cl-strip {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 12px;
+}
+.cl-count-chip {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding: 5px 11px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--rule);
+  font-size: 12px; color: var(--ink-3);
+}
+.cl-count-chip .dot { width: 7px; height: 7px; border-radius: 50%; align-self: center; }
+.cl-count-chip b { font-size: 13px; font-weight: 700; color: var(--ink); }
+.cl-grow { flex: 1 1 auto; }
+
+/* ── Cards ─────────────────────────────────────────────── */
+
+.cl-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  align-items: start;
+}
+.cl-card {
+  display: flex; flex-direction: column;
+  background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 13px; overflow: hidden;
+}
+.cl-card[data-st="approvato"]    { border-color: var(--st-approvato); }
+.cl-card[data-st="in_revisione"] { border-color: var(--st-revisione); }
+
+.cl-cell { position: relative; cursor: pointer; background: var(--paper-2); }
+.cl-media {
+  position: relative; width: 100%;
+  aspect-ratio: var(--ratio, 4/5);
+  overflow: hidden; background: var(--paper-2);
+  display: flex; align-items: center; justify-content: center;
+}
+.cl-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cl-media.contain { background: #0C0C0F; }
+.cl-media.contain img { object-fit: contain; }
+.cl-ph { font-size: 12px; color: var(--ink-4); font-weight: 600; padding: 16px; text-align: center; }
+
+.cl-mk {
+  position: absolute; top: 9px; right: 9px;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 999px;
+  background: rgba(16,16,20,.62); color: #fff;
+  font-size: 10.5px; font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+.cl-mk i { font-style: normal; }
+
+.cl-ed { position: absolute; inset: 0; padding: 16px 15px; display: flex; flex-direction: column; gap: 7px; }
+.cl-ed .eye { font-size: 10px; font-weight: 700; opacity: .65; }
+.cl-ed .tit { font-size: 19px; font-weight: 800; line-height: 1.1; letter-spacing: -.035em; flex: 1 1 auto; overflow: hidden; }
+.cl-ed .rule { height: 1px; background: currentColor; opacity: .18; }
+.cl-ed .sub { font-size: 11px; opacity: .65; line-height: 1.45; }
+
+.cl-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+
+.cl-badges { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.cl-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border-radius: 999px;
+  border: 1px solid var(--rule-2); color: var(--ink-2);
+  font-size: 10.5px; font-weight: 600; white-space: nowrap;
+}
+.cl-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+.cl-chip.date { border-color: transparent; background: var(--paper-2); font-weight: 700; color: var(--ink); }
+.cl-chip.paid { background: var(--ink); border-color: var(--ink); color: #FFD88A; font-weight: 700; }
+.cl-chip.partner { background: #4A3DBA; border-color: #4A3DBA; color: #EDEBFF; font-weight: 700; }
+
+.cl-state {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; white-space: nowrap;
+}
+.cl-state .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.cl-excerpt {
+  font-size: 13.5px; line-height: 1.55; color: var(--ink-2);
+  white-space: pre-wrap; word-break: break-word;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* The full caption, shown while the pointer is on the content. */
+.cap-pop {
+  position: fixed; z-index: 450;
+  padding: 12px 14px; border-radius: 10px;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--rule-2);
+  box-shadow: 0 12px 36px rgba(0,0,0,.2);
+  font-size: 13.5px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
+  max-height: 60vh; overflow-y: auto;
+  pointer-events: none;
+}
+
+.cl-note {
+  padding: 9px 11px; border-radius: 9px;
+  background: var(--st-revisione-sub);
+  border-left: 3px solid var(--st-revisione);
+  font-size: 12.5px; line-height: 1.5; color: var(--ink-2);
+}
+.cl-note b { display: block; font-size: 11px; color: var(--st-revisione); margin-bottom: 2px; }
+.cl-note span { white-space: pre-wrap; word-break: break-word; }
+.cl-note.small { font-size: 12px; }
+
+/* ── Actions ───────────────────────────────────────────── */
+
+.cl-actions {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 11px 14px; border-top: 1px solid var(--rule);
+  background: var(--panel-2);
+}
+.cl-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 38px; padding: 0 14px;
+  border: 1px solid var(--rule-2); border-radius: 9px;
+  background: var(--panel); color: var(--ink);
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  transition: background .14s, border-color .14s, color .14s;
+}
+.cl-btn:hover { border-color: var(--ink-4); background: var(--paper-2); }
+.cl-btn.primary {
+  flex: 1 1 auto;
+  background: var(--st-approvato); border-color: var(--st-approvato); color: #fff;
+}
+.cl-btn.primary:hover { filter: brightness(1.07); background: var(--st-approvato); }
+.cl-btn.ghost { border-color: transparent; background: transparent; color: var(--ink-3); min-height: 32px; }
+.cl-btn.ghost:hover { background: var(--paper-2); color: var(--ink); }
+.cl-btn.ghost[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.cl-btn.sm { min-height: 30px; font-size: 12px; padding: 0 11px; }
+.cl-btn svg { width: 14px; height: 14px; flex: 0 0 auto; }
+
+.cl-done {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: var(--st-approvato);
+}
+.cl-done svg { width: 14px; height: 14px; }
+.cl-done.rev { color: var(--st-revisione); }
+.cl-done.pub { color: var(--st-pubblicato); }
+
+/* ── Empty / gate ──────────────────────────────────────── */
+
+.cl-empty {
+  text-align: center; padding: 64px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.cl-empty h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -.025em; }
+.cl-empty p { margin: 0; font-size: 13.5px; color: var(--ink-3); max-width: 44ch; line-height: 1.6; }
+
+.cl-gate {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; padding: 30px;
+  text-align: center;
+}
+.cl-gate h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -.03em; }
+.cl-gate p { margin: 0; font-size: 14px; color: var(--ink-3); max-width: 42ch; line-height: 1.6; }
+
+.cl-foot {
+  margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--rule);
+  text-align: center; font-size: 12px; color: var(--ink-4);
+}
+.cl-foot .sig { font-weight: 800; letter-spacing: -.03em; color: var(--ink-3); margin-top: 2px; }
+
+/* ── Viewer ────────────────────────────────────────────── */
+
+.cl-viewer {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(10,10,13,.74); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center; padding: 22px;
+}
+.cl-viewer.on { display: flex; }
+
+.cl-vw {
+  position: relative; display: flex;
+  width: min(1000px, 100%); max-height: min(760px, 90vh);
+  background: var(--panel); border-radius: 15px; overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0,0,0,.4);
+}
+.cl-vw-media {
+  flex: 1 1 58%; min-width: 0; background: #0C0C0F;
+  display: flex; align-items: center; justify-content: center; padding: 10px;
+}
+.cl-vw-media .cl-media { max-height: 100%; }
+.cl-vw-side { flex: 0 0 370px; max-width: 370px; display: flex; flex-direction: column; min-width: 0; }
+
+.cl-vw-head { display: flex; align-items: center; gap: 10px; padding: 14px 15px; border-bottom: 1px solid var(--rule); }
+.cl-av {
+  width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; overflow: hidden;
+  background: var(--paper-2); border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: var(--ink-3);
+}
+.cl-av img { width: 100%; height: 100%; object-fit: cover; }
+.cl-vw-who { flex: 1 1 auto; min-width: 0; }
+.cl-vw-who b { display: block; font-size: 13.5px; font-weight: 700; }
+.cl-vw-who span { display: block; font-size: 11.5px; color: var(--ink-3); }
+.cl-x {
+  width: 32px; height: 32px; flex: 0 0 auto;
+  border: 0; border-radius: 8px; background: transparent; color: var(--ink-3);
+  display: flex; align-items: center; justify-content: center;
+}
+.cl-x:hover { background: var(--paper-2); color: var(--ink); }
+
+.cl-vw-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 15px; display: flex; flex-direction: column; gap: 12px; }
+.cl-caption { font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.cl-caption.none { color: var(--ink-4); font-style: italic; }
+.cl-vw-foot { border-top: 1px solid var(--rule); }
+.cl-vw-foot .cl-actions { border-top: 0; }
+
+.cl-arrow, .cl-step {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  border: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.9); color: #111;
+}
+.cl-arrow { width: 32px; height: 32px; font-size: 18px; }
+.cl-arrow.left { left: 10px; } .cl-arrow.right { right: 10px; }
+.cl-step { width: 36px; height: 36px; font-size: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.28); }
+.cl-step.prev { left: -18px; } .cl-step.next { right: -18px; }
+.cl-count { position: absolute; top: -26px; right: 0; font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,.75); }
+
+.cl-dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; gap: 5px; justify-content: center; }
+.cl-dots i { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.42); }
+.cl-dots i.on { background: #fff; }
+
+.cl-ta {
+  width: 100%; padding: 10px 11px;
+  border: 1px solid var(--rule-2); border-radius: 9px;
+  background: var(--panel-2); color: var(--ink);
+  font-size: 14px; line-height: 1.55; resize: vertical; min-height: 110px;
+}
+.cl-ta:focus { outline: none; border-color: var(--cobalt); background: var(--panel); }
+.cl-modal-note { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+/* ── Narrow ────────────────────────────────────────────── */
+
+@media (max-width: 880px) {
+  .cl-vw { flex-direction: column; max-height: 92vh; }
+  .cl-vw-media { flex: 0 0 auto; max-height: 44vh; }
+  .cl-vw-side { flex: 1 1 auto; max-width: 100%; }
+  .cl-step.prev { left: 6px; } .cl-step.next { right: 6px; }
+}
+@media (max-width: 620px) {
+  .cl-main { padding: 14px 13px 60px; }
+  .cl-head-top { padding: 13px 14px 11px; }
+  .cl-head-rows { padding: 9px 14px; }
+  .cl-grid { grid-template-columns: 1fr; gap: 12px; }
+  .cl-viewer { padding: 0; }
+  .cl-vw { border-radius: 0; width: 100%; max-height: 100vh; height: 100%; }
+  .cl-ask { padding: 15px 16px; }
+  .cl-who h1 { font-size: 17px; }
+}
+
+/* ── Shared UI plumbing ────────────────────────────────────
+   01-core.js draws modals and toasts with its own class names.
+   The studio stylesheet is not loaded here, so the client page
+   carries its own version of just those pieces — sized for a
+   page people will mostly meet on a phone.
+   ──────────────────────────────────────────────────────── */
+
+.modal-bg {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(16,16,20,.5);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-bg.on { display: flex; }
+.modal {
+  width: 440px; max-width: 100%; max-height: 86vh; overflow-y: auto;
+  background: var(--panel); border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.modal-hd {
+  position: sticky; top: 0; z-index: 2; background: var(--panel);
+  display: flex; align-items: center; gap: 10px;
+  padding: 15px 17px; border-bottom: 1px solid var(--rule);
+}
+.modal-hd h3 { margin: 0; flex: 1 1 auto; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.modal-bd { padding: 17px; display: flex; flex-direction: column; gap: 13px; }
+.modal-ft {
+  position: sticky; bottom: 0; z-index: 2; background: var(--panel);
+  display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+  padding: 13px 17px; border-top: 1px solid var(--rule);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 38px; padding: 0 15px;
+  border: 1px solid var(--rule-2); border-radius: 9px;
+  background: var(--panel); color: var(--ink);
+  font-size: 13.5px; font-weight: 600; white-space: nowrap;
+  transition: background .14s, border-color .14s, color .14s;
+}
+.btn:hover { background: var(--paper-2); border-color: var(--ink-4); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+.btn.danger { color: var(--st-revisione); border-color: var(--st-revisione-sub); }
+.btn.danger:hover { background: var(--st-revisione-sub); border-color: var(--st-revisione); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--ink-3); }
+.btn.ghost:hover { background: var(--paper-2); color: var(--ink); }
+.btn.icon { width: 34px; min-height: 34px; padding: 0; }
+.btn.sm { min-height: 30px; font-size: 12.5px; padding: 0 11px; }
+.btn.icon.sm { width: 30px; padding: 0; }
+.btn svg { width: 14px; height: 14px; flex: 0 0 auto; }
+
+.toasts {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+  z-index: 700; display: flex; flex-direction: column; gap: 7px;
+  align-items: center; pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 17px; border-radius: 999px;
+  background: var(--ink); color: var(--paper);
+  font-size: 13.5px; font-weight: 600;
+  box-shadow: 0 10px 28px rgba(0,0,0,.26);
+  pointer-events: auto; max-width: 92vw;
+  animation: clToast 180ms cubic-bezier(.2,.8,.3,1);
+}
+.toast button { background: none; border: 0; color: #A8B4FF; font-weight: 700; font-size: 13.5px; padding: 0; }
+@keyframes clToast { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 620px) {
+  .modal-bg { padding: 0; align-items: flex-end; }
+  .modal { width: 100%; max-height: 92vh; border-radius: 16px 16px 0 0; }
+  .modal-ft .btn { flex: 1 1 calc(50% - 4px); }
+}
+
+.cl-demo {
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--paper-2); border: 1px solid var(--rule-2);
+  font-size: 10.5px; font-weight: 700; color: var(--ink-3);
+  white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div id="cl-root"></div>
+
+<div class="modal-bg" id="modal-bg"></div>
+<div class="cl-viewer" id="cl-viewer"></div>
+<div class="toasts" id="toasts"></div>
+
+<!-- The client bundle. None of the studio's modules are here:
+     no editor, no planner, no client registry, no backup. Just
+     shared reference data, shared UI plumbing, the data contract
+     and the page itself. -->
+<script>
+/* src/js/00-dates.js */
+/* ============================================================
+   Ideology — date vocabulary
+
+   Months are 'YYYY-MM', days 'YYYY-MM-DD'. Both sortable as
+   plain strings, which is why the feed can order itself without
+   parsing anything.
+
+   This lives on its own because two separate pages need it: the
+   studio app and the client link. The client page must not load
+   the editing code, so the only alternative was a second copy of
+   this arithmetic — and two copies of a date routine drift.
+   ============================================================ */
+
+window.IDE = window.IDE || {};
+
+(function (A) {
+  'use strict';
+
+  var MONTH_NAMES = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+                     'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+  var DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  A.MONTH_NAMES = MONTH_NAMES;
+  A.DAY_NAMES = DAY_NAMES;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  A.pad = pad;
+
+  A.monthKeyOf = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1); };
+  A.todayKey = function () {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  };
+  A.thisMonth = function () { return A.monthKeyOf(new Date()); };
+
+  A.monthLabel = function (mk) {
+    if (!mk) return '—';
+    var p = String(mk).split('-');
+    return MONTH_NAMES[(parseInt(p[1], 10) || 1) - 1] + ' ' + p[0];
+  };
+  A.monthShort = function (mk) { return A.monthLabel(mk).slice(0, 3); };
+
+  A.shiftMonth = function (mk, delta) {
+    var p = String(mk).split('-'), y = parseInt(p[0], 10), m = parseInt(p[1], 10) - 1 + delta;
+    y += Math.floor(m / 12);
+    m = ((m % 12) + 12) % 12;
+    return y + '-' + pad(m + 1);
+  };
+
+  A.dayLabel = function (iso) {
+    if (!iso) return '';
+    var p = String(iso).split('-');
+    return parseInt(p[2], 10) + ' ' + MONTH_NAMES[(parseInt(p[1], 10) || 1) - 1].slice(0, 3).toLowerCase();
+  };
+
+  /* "14 ottobre 2026" — the long form, for the client link where
+     there is room and no ambiguity is worth risking. */
+  A.dayLong = function (iso) {
+    if (!iso) return '';
+    var p = String(iso).split('-');
+    return parseInt(p[2], 10) + ' ' +
+      MONTH_NAMES[(parseInt(p[1], 10) || 1) - 1].toLowerCase() + ' ' + p[0];
+  };
+
+  A.monthOfDay = function (iso) { return String(iso || '').slice(0, 7); };
+})(window.IDE);
+</script>
+<script>
+/* src/js/00-platforms.js */
+/* ============================================================
+   Ideology — platform catalogue
+
+   Reference data, shared by both surfaces. The studio app reads
+   it to size the composer; the client link reads it to size the
+   preview the client is looking at. It carries no behaviour, so
+   sharing it creates no path between the two apps — and keeping
+   one copy is the whole point: a second table of aspect ratios
+   is a second table to forget to update.
+   ============================================================ */
+
+window.IDE = window.IDE || {};
+
+(function (A) {
+  'use strict';
+
+  /* ── Platform catalogue ───────────────────────────────
+     Choosing a platform on an account is the only place the
+     studio ever sets a size. Everything downstream reads from
+     here: the aspect ratio of the grid cells, how many columns
+     the feed is drawn in, the export dimensions quoted to the
+     designer, the caption counter, and the story format. There
+     is no second list of "formats" to keep in step.
+  ──────────────────────────────────────────────────────── */
+
+  A.PLATFORMS = {
+    Instagram: {
+      key: 'Instagram', label: 'Instagram', color: '#C13584', cols: 3,
+      ratio: '4/5', w: 1080, h: 1350, sizeLabel: '4:5',
+      alts: [{ ratio: '1/1', w: 1080, h: 1080, label: '1:1 quadrato' },
+             { ratio: '1.91/1', w: 1080, h: 566, label: '1.91:1 orizzontale' }],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+      captionMax: 2200, hashtagMax: 30,
+      note: 'Griglia a 3 colonne. Il 4:5 occupa più schermo del quadrato.'
+    },
+    TikTok: {
+      key: 'TikTok', label: 'TikTok', color: '#00C3C8', cols: 4,
+      ratio: '9/16', w: 1080, h: 1920, sizeLabel: '9:16',
+      alts: [],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+      captionMax: 2200, hashtagMax: 10,
+      note: 'Verticale pieno. Tieni testo e logo lontani dai bordi inferiori.'
+    },
+    Facebook: {
+      key: 'Facebook', label: 'Facebook', color: '#1877F2', cols: 3,
+      ratio: '1/1', w: 1080, h: 1080, sizeLabel: '1:1',
+      alts: [{ ratio: '4/5', w: 1080, h: 1350, label: '4:5 verticale' }],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+      captionMax: 63206, hashtagMax: 0,
+      note: 'I primi 125 caratteri sono quelli che si leggono senza aprire.'
+    },
+    LinkedIn: {
+      key: 'LinkedIn', label: 'LinkedIn', color: '#0A66C2', cols: 3,
+      ratio: '1/1', w: 1200, h: 1200, sizeLabel: '1:1',
+      alts: [{ ratio: '1.91/1', w: 1200, h: 627, label: '1.91:1 link' }],
+      story: null,
+      captionMax: 3000, hashtagMax: 5,
+      note: 'Il testo si tronca a 210 caratteri: metti la tesi all\'inizio.'
+    },
+    YouTube: {
+      key: 'YouTube', label: 'YouTube', color: '#FF0033', cols: 2,
+      ratio: '16/9', w: 1920, h: 1080, sizeLabel: '16:9',
+      alts: [{ ratio: '9/16', w: 1080, h: 1920, label: '9:16 Shorts' }],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16 Shorts' },
+      captionMax: 5000, hashtagMax: 15,
+      note: 'La miniatura va letta a 120 px di larghezza.'
+    },
+    Pinterest: {
+      key: 'Pinterest', label: 'Pinterest', color: '#BD081C', cols: 4,
+      ratio: '2/3', w: 1000, h: 1500, sizeLabel: '2:3',
+      alts: [{ ratio: '9/16', w: 1080, h: 1920, label: '9:16 Idea Pin' }],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+      captionMax: 500, hashtagMax: 20,
+      note: 'Pin verticali: il 2:3 è il formato che la piattaforma premia.'
+    },
+    X: {
+      key: 'X', label: 'X', color: '#111114', cols: 3,
+      ratio: '16/9', w: 1600, h: 900, sizeLabel: '16:9',
+      alts: [{ ratio: '1/1', w: 1080, h: 1080, label: '1:1' }],
+      story: null,
+      captionMax: 280, hashtagMax: 3,
+      note: 'Il testo conta più dell\'immagine. 280 caratteri.'
+    },
+    Altro: {
+      key: 'Altro', label: 'Altro', color: '#8A8A93', cols: 3,
+      ratio: '4/5', w: 1080, h: 1350, sizeLabel: '4:5',
+      alts: [{ ratio: '1/1', w: 1080, h: 1080, label: '1:1' },
+             { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+             { ratio: '16/9', w: 1920, h: 1080, label: '16:9' }],
+      story: { ratio: '9/16', w: 1080, h: 1920, label: '9:16' },
+      captionMax: 2200, hashtagMax: 30,
+      note: 'Canale generico: scegli tu il formato di riferimento.'
+    }
+  };
+  A.PLATFORM_LIST = ['Instagram', 'TikTok', 'Facebook', 'LinkedIn', 'YouTube', 'Pinterest', 'X', 'Altro'];
+  A.platformOf = function (p) { return A.PLATFORMS[p] || A.PLATFORMS.Instagram; };
+
+  /* An account may override the platform default with one of its
+     declared alternatives; everything still comes from one source. */
+  A.formatOfAccount = function (acc) {
+    var plat = A.platformOf(acc && acc.platform);
+    if (acc && acc.ratio) {
+      var hit = null;
+      (plat.alts || []).forEach(function (a) { if (a.ratio === acc.ratio) hit = a; });
+      if (hit) return { ratio: hit.ratio, w: hit.w, h: hit.h, sizeLabel: hit.label, cols: plat.cols, platform: plat };
+    }
+    return { ratio: plat.ratio, w: plat.w, h: plat.h, sizeLabel: plat.sizeLabel, cols: plat.cols, platform: plat };
+  };
+})(window.IDE);
+</script>
+<script>
+/* src/js/01-core.js */
+/* ============================================================
+   Ideology — core
+   One id generator for the whole app. Nassa's bug was every
+   call site rolling its own `'a_'+Date.now()`, which collides
+   inside a single millisecond. This is the only one.
+   ============================================================ */
+
+window.IDE = window.IDE || {};
+
+(function (A) {
+  'use strict';
+
+  var counter = 0;
+
+  A.uid = function (prefix) {
+    counter = (counter + 1) % 4096;
+    return (prefix || 'x') + '_' +
+      Date.now().toString(36) + '_' +
+      counter.toString(36) + Math.random().toString(36).slice(2, 7);
+  };
+
+  /* ── DOM ──────────────────────────────────────────────── */
+
+  A.el = function (tag, props, kids) {
+    var n = document.createElement(tag);
+    if (props) {
+      for (var k in props) {
+        var v = props[k];
+        if (v == null || v === false) continue;
+        if (k === 'class') n.className = v;
+        else if (k === 'text') n.textContent = v;
+        else if (k === 'html') n.innerHTML = v;
+        else if (k === 'style') n.style.cssText = v;
+        else if (k === 'dataset') { for (var d in v) n.dataset[d] = v[d]; }
+        else if (k.slice(0, 2) === 'on' && typeof v === 'function') n.addEventListener(k.slice(2), v);
+        else n.setAttribute(k, v === true ? '' : v);
+      }
+    }
+    (kids || []).forEach(function (c) {
+      if (c == null || c === false) return;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return n;
+  };
+
+  A.$ = function (sel, root) { return (root || document).querySelector(sel); };
+  A.$$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+  A.clear = function (n) { while (n && n.firstChild) n.removeChild(n.firstChild); return n; };
+  A.esc = function (s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  };
+
+  /* ── Icons (inline, no network) ───────────────────────── */
+
+  var P = {
+    play:    '<polygon points="5 3 19 12 5 21 5 3"/>',
+    image:   '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+    layers:  '<rect x="2" y="6" width="14" height="14" rx="2"/><path d="M22 6h-2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2"/>',
+    type:    '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+    plus:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    left:    '<polyline points="15 18 9 12 15 6"/>',
+    right:   '<polyline points="9 18 15 12 9 6"/>',
+    check:   '<polyline points="20 6 9 17 4 12"/>',
+    pencil:  '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    trash:   '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
+    eye:     '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    link:    '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+    cal:     '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+    users:   '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/>',
+    story:   '<rect x="7" y="2" width="10" height="20" rx="2.5"/>',
+    grid:    '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    down:    '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+    up:      '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+    moon:    '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+    sun:     '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    info:    '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+    send:    '<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
+    x:       '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>',
+    filter:  '<polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"/>'
+  };
+
+  A.icon = function (name, size) {
+    var s = size || 14;
+    return '<svg viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" ' +
+      'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || '') + '</svg>';
+  };
+  A.iconEl = function (name, size) {
+    var span = document.createElement('span');
+    span.style.cssText = 'display:inline-flex;align-items:center;';
+    span.innerHTML = A.icon(name, size);
+    return span;
+  };
+
+  /* ── Toasts ───────────────────────────────────────────── */
+
+  A.toast = function (msg, opts) {
+    opts = opts || {};
+    var host = A.$('#toasts');
+    if (!host) return;
+    var t = A.el('div', { class: 'toast' }, [msg]);
+    if (opts.undo) {
+      t.appendChild(A.el('button', {
+        type: 'button', text: 'Annulla',
+        onclick: function () { t.remove(); opts.undo(); }
+      }));
+    }
+    host.appendChild(t);
+    setTimeout(function () {
+      t.style.transition = 'opacity 180ms, transform 180ms';
+      t.style.opacity = '0'; t.style.transform = 'translateY(6px)';
+      setTimeout(function () { t.remove(); }, 200);
+    }, opts.undo ? 6000 : 2600);
+  };
+
+  /* ── Modal ────────────────────────────────────────────── */
+
+  var modalCloser = null;
+
+  A.modal = function (cfg) {
+    var bg = A.$('#modal-bg');
+    A.clear(bg);
+    var box = A.el('div', { class: 'modal' + (cfg.wide ? ' wide' : ''), role: 'dialog', 'aria-modal': 'true' });
+    var hd = A.el('div', { class: 'modal-hd' }, [
+      A.el('h3', { text: cfg.title || '' }),
+      A.el('button', { class: 'btn ghost icon sm', 'aria-label': 'Chiudi', html: A.icon('x', 14), onclick: A.closeModal })
+    ]);
+    var bd = A.el('div', { class: 'modal-bd' });
+    (cfg.body || []).forEach(function (n) { if (n) bd.appendChild(n); });
+    box.appendChild(hd); box.appendChild(bd);
+    if (cfg.actions && cfg.actions.length) {
+      var ft = A.el('div', { class: 'modal-ft' });
+      cfg.actions.forEach(function (a) {
+        ft.appendChild(A.el('button', {
+          class: 'btn ' + (a.kind || ''), text: a.label,
+          onclick: function () {
+            if (a.run) { if (a.run() === false) return; }
+            if (a.keepOpen !== true) A.closeModal();
+          }
+        }));
+      });
+      box.appendChild(ft);
+    }
+    bg.appendChild(box);
+    bg.classList.add('on');
+    bg.onclick = function (e) { if (e.target === bg) A.closeModal(); };
+    A.closeCaptionPeek();
+    modalCloser = cfg.onClose || null;
+    setTimeout(function () {
+      var f = box.querySelector('input,textarea,select,button.primary');
+      if (f) f.focus();
+    }, 40);
+  };
+
+  A.closeModal = function () {
+    var bg = A.$('#modal-bg');
+    if (!bg) return;
+    bg.classList.remove('on');
+    A.clear(bg);
+    if (modalCloser) { var c = modalCloser; modalCloser = null; c(); }
+  };
+
+  /* A dialog that redraws itself after every tick must not throw the reader
+     back to the top. Rebuild through this: it restores the scroll offset and
+     puts the keyboard focus back on the control that was just used, matched
+     by its data-focus key rather than by position. */
+  A.rebuild = function (build) {
+    var box = A.$('#modal-bg .modal');
+    var top = box ? box.scrollTop : 0;
+    var act = document.activeElement;
+    var key = (act && act.getAttribute) ? act.getAttribute('data-focus') : null;
+
+    build();
+
+    var fresh = A.$('#modal-bg .modal');
+    if (!fresh) return;
+    fresh.scrollTop = top;
+    if (!key) return;
+    var again = fresh.querySelector('[data-focus="' + key + '"]');
+    if (again) { try { again.focus({ preventScroll: true }); } catch (e) { again.focus(); } }
+  };
+
+  /* A panel hung off a button: it closes when you click away, press Escape
+     or scroll the page under it, and it never traps focus the way a modal
+     does — it is a menu, not a decision. */
+  var popHost = null, popOff = null;
+
+  A.closePopover = function () {
+    if (!popHost) return;
+    popHost.remove();
+    popHost = null;
+    if (popOff) { popOff(); popOff = null; }
+  };
+
+  A.popover = function (anchor, build, opts) {
+    opts = opts || {};
+    var wasOpen = popHost && popHost.dataset.owner === (anchor.dataset.popId || '');
+    A.closePopover();
+    if (wasOpen) return;
+
+    if (!anchor.dataset.popId) anchor.dataset.popId = A.uid('pop');
+    popHost = A.el('div', { class: 'popover', dataset: { owner: anchor.dataset.popId } });
+    build(popHost, A.closePopover);
+    document.body.appendChild(popHost);
+
+    function place() {
+      if (!popHost) return;
+      var r = anchor.getBoundingClientRect();
+      var w = popHost.offsetWidth, h = popHost.offsetHeight;
+      var left = opts.align === 'left' ? r.left : r.right - w;
+      left = Math.max(10, Math.min(left, window.innerWidth - w - 10));
+      var top = r.bottom + 6;
+      if (top + h > window.innerHeight - 10) top = Math.max(10, r.top - h - 6);
+      popHost.style.left = left + 'px';
+      popHost.style.top = top + 'px';
+    }
+    place();
+
+    function away(e) { if (popHost && !popHost.contains(e.target) && !anchor.contains(e.target)) A.closePopover(); }
+    function esc(e) { if (e.key === 'Escape') A.closePopover(); }
+    setTimeout(function () { document.addEventListener('mousedown', away); }, 0);
+    document.addEventListener('keydown', esc);
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', A.closePopover, true);
+    popOff = function () {
+      document.removeEventListener('mousedown', away);
+      document.removeEventListener('keydown', esc);
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', A.closePopover, true);
+    };
+    return popHost;
+  };
+
+  /* A clamped caption reads in full on hover and closes when the
+     pointer leaves. No click, no dialog, nothing that can be left
+     open — and nothing at all on a touch screen, where there is no
+     hover and tapping the content opens it properly instead.
+
+     `trigger` is what the pointer enters, `clamp` is the cut-off
+     text: they are the same element in the studio grid, and
+     different on the client card, where hovering anywhere on the
+     content shows the caption that belongs to it. */
+  var capPop = null;
+
+  A.closeCaptionPeek = function () {
+    if (!capPop) return;
+    capPop.remove();
+    capPop = null;
+  };
+
+  A.captionPeek = function (opts) {
+    var trigger = opts.trigger, clamp = opts.clamp, text = opts.text || '';
+    if (!trigger || !clamp || !text) return;
+
+    trigger.addEventListener('mouseenter', function () {
+      A.closeCaptionPeek();
+      /* nothing is hidden, so there is nothing to reveal */
+      if (clamp.scrollHeight <= clamp.clientHeight + 2) return;
+
+      var r = clamp.getBoundingClientRect();
+      capPop = A.el('div', { class: 'cap-pop', text: text });
+      document.body.appendChild(capPop);
+
+      var w = Math.max(r.width, 260);
+      capPop.style.width = w + 'px';
+      capPop.style.left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8) + 'px';
+
+      var h = capPop.offsetHeight;
+      var top = r.top - 6;
+      if (top + h > window.innerHeight - 8) top = Math.max(8, window.innerHeight - h - 8);
+      capPop.style.top = top + 'px';
+    });
+    trigger.addEventListener('mouseleave', A.closeCaptionPeek);
+  };
+
+  window.addEventListener('scroll', function () { A.closeCaptionPeek(); }, true);
+
+  A.confirm = function (cfg) {
+    A.modal({
+      title: cfg.title,
+      body: [A.el('p', { style: 'margin:0;font-size:13px;line-height:1.6;color:var(--ink-2);', text: cfg.body || '' })],
+      actions: [
+        { label: 'Annulla' },
+        { label: cfg.ok || 'Conferma', kind: cfg.danger ? 'danger' : 'primary', run: cfg.run }
+      ]
+    });
+  };
+
+  /* ── Misc ─────────────────────────────────────────────── */
+
+  A.debounce = function (fn, ms) {
+    var t = null;
+    return function () {
+      var args = arguments, self = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(self, args); }, ms);
+    };
+  };
+
+  A.initials = function (s) {
+    return String(s || '?').trim().split(/\s+/).slice(0, 2)
+      .map(function (w) { return w[0] || ''; }).join('').toUpperCase() || '?';
+  };
+
+  A.fmtNum = function (n) {
+    n = Number(n) || 0;
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.0', '') + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + 'K';
+    return String(n);
+  };
+
+  A.copy = function (text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+    }
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    return Promise.resolve(ok);
+  };
+
+  /* Save a generated file. Uses the claude.ai downloads capability when the
+     page runs as a published artifact, and a plain anchor otherwise, so the
+     same build works hosted and offline. */
+  A.download = function (filename, text, mime) {
+    var blob = new Blob([text], { type: mime || 'application/json' });
+    function anchor() {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    }
+    if (window.claude && typeof window.claude.use === 'function') {
+      window.claude.use('downloads').then(function (d) {
+        if (!d) return anchor();
+        d.save({ filename: filename, data: blob }).catch(anchor);
+      }).catch(anchor);
+    } else {
+      anchor();
+    }
+  };
+})(window.IDE);
+</script>
+<script>
+/* src/data/demo.js */
+/* Generato da make-demo.mjs — non modificare a mano.
+   Documento di esempio usato dalla pagina cliente solo quando
+   non ne esiste uno vero in questo browser. */
+window.__IDEOLOGY_DEMO__ = {"v":1,"savedAt":"2026-10-15T13:05:24.231Z","prefs":{"ugcDays":[1,3,5]},"counts":{"clients":3,"posts":27,"stories":7,"highlights":3,"ugcSlots":8,"creators":2,"categories":9},"clients":[{"id":"cl_mv9jxai2_2d438hw","name":"Fornace Milano","slug":"fornace-milano","shareToken":"707df05a2719e4ad","status":"attivo","note":"","goals":{"post":12,"reel":5,"stories":24,"ugc":8},"accounts":[{"id":"ac_mv9jxai2_2ekmwaz","handle":"@fornacemilano","platform":"Instagram","ratio":"","bio":"Ceramica fatta a mano in Porta Venezia.\nPezzi unici, piccole serie, corsi il sabato.","followers":18400,"following":312,"avatarUrl":""},{"id":"ac_mv9jxai2_2f636xb","handle":"@fornacemilano","platform":"TikTok","ratio":"","bio":"Il tornio, visto da vicino.","followers":7100,"following":54,"avatarUrl":""}],"palette":{"bg":"#F2ECE4","ink":"#241E19","accent":"#9A5B3C","alt":"#6E6256"}},{"id":"cl_mv9jxai3_476iemm","name":"Bottega Verdi","slug":"bottega-verdi","shareToken":"f6412d950e474582","status":"attivo","note":"","goals":{"post":8,"reel":2,"stories":12,"ugc":4},"accounts":[{"id":"ac_mv9jxai3_48zfytj","handle":"@bottegaverdi","platform":"Instagram","ratio":"","bio":"Cucina lombarda, menù corto.\nVia Melzo 14, Milano.","followers":9200,"following":188,"avatarUrl":""}],"palette":{"bg":"#1E2420","ink":"#F2EFE7","accent":"#C8A96E","alt":"#7E8C76"}},{"id":"cl_mv9jxai3_4k8sip6","name":"Atelier Noto","slug":"atelier-noto","shareToken":"4c14d2ca7301db3d","status":"pausa","note":"","goals":{"post":6,"reel":2,"stories":8,"ugc":0},"accounts":[{"id":"ac_mv9jxai3_4ltumcx","handle":"@ateliernoto","platform":"Instagram","ratio":"","bio":"Gioielli in argento riciclato.\nSu appuntamento.","followers":4800,"following":97,"avatarUrl":""},{"id":"ac_mv9jxai3_4mojufz","handle":"Atelier Noto","platform":"LinkedIn","ratio":"","bio":"Design e produzione orafa, Milano.","followers":1200,"following":0,"avatarUrl":""}],"palette":{"bg":"#F4F2F6","ink":"#24202B","accent":"#55436B","alt":"#A89BB8"}}],"posts":[{"id":"post_mv9jxai2_2k21bw2","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":10,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F4EBED%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22250%22%20r%3D%22184%22%20fill%3D%22none%22%20stroke%3D%22%23C2A8AE%22%20stroke-width%3D%2236%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22250%22%20r%3D%22108%22%20fill%3D%22none%22%20stroke%3D%22%236E4C57%22%20stroke-width%3D%2228.000000000000004%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22250%22%20r%3D%2236%22%20fill%3D%22%236E4C57%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-02","time":"","showDate":true,"caption":"La serie Terra esce dal forno dopo 11 ore a 1240°.\nSmalto a cenere di faggio, ogni pezzo vira in modo diverso.\n\nDisponibile in bottega da sabato.","categoryId":"cat_mv9jxai2_2g86o7f","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2lombwl","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":20,"kind":"carosello","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%200%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[{"id":"sl_mv9jxai2_2men4zo","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%200%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai2_2nit03g","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23A3B1C6%22%2F%3E%3Cellipse%20cx%3D%22-87.99999999999999%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23EAEEF5%22%20transform%3D%22rotate(-18%20-87.99999999999999%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%233F4F6B%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai2_2ofo1rz","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23CDA18A%22%2F%3E%3Cellipse%20cx%3D%2224%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F6E8E0%22%20transform%3D%22rotate(-18%2024%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A4A34%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai2_2pemcao","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23A9B7A0%22%2F%3E%3Cellipse%20cx%3D%22-63.99999999999999%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23EEF1E9%22%20transform%3D%22rotate(-18%20-63.99999999999999%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%234F5E4A%22%2F%3E%3C%2Fsvg%3E","caption":""}],"date":"2026-10-04","time":"","showDate":true,"caption":"Come riconoscere un pezzo tornito a mano in quattro dettagli.\nSalva il carosello, portalo con te la prossima volta che compri ceramica.","categoryId":"cat_mv9jxai2_2jpuc1l","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2qfple8","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":30,"kind":"reel","mediaUrl":"","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%2243.99999999999999%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%2043.99999999999999%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","slides":[],"date":"2026-10-06","time":"","showDate":true,"caption":"Centrare l'argilla è il gesto più noioso e il più importante.\nNove secondi, nessun taglio.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":["ac_mv9jxai2_2f636xb"],"inStories":false,"storyIds":["st_mv9jxai2_3diuoon","st_mv9jxai2_3e4wdha"],"editorial":{"eyebrow":"","title":"","sub":""},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2rx26vi","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":40,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%200%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-08","time":"18:30","showDate":true,"caption":"Tazza Noce, 220 ml.\nFatta per stare in mano, non per stare in vetrina.","categoryId":"cat_mv9jxai2_2g86o7f","paid":true,"partner":"","videoName":"","alsoOn":[],"inStories":true,"storyIds":["st_mv9jxai2_3t1po8e"],"editorial":{"eyebrow":"","title":"","sub":""},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2se4ndo","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":50,"kind":"editoriale","mediaUrl":"","coverUrl":"","slides":[],"date":"2026-10-10","time":"","showDate":true,"caption":"Quanto tempo serve davvero per una ciotola.\nTre settimane, quattro passaggi, due cotture.","categoryId":"cat_mv9jxai2_2jpuc1l","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"Cultura materiale","title":"Una ciotola non è mai finita quando esce dal tornio","sub":"Essiccazione, prima cottura, smalto, seconda cottura. Tre settimane prima di poterla chiamare oggetto."},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2tinqhw","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":60,"kind":"reel","mediaUrl":"","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%239FB8B5%22%2F%3E%3Cellipse%20cx%3D%2224%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23E7F0EF%22%20transform%3D%22rotate(-18%2024%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%233D5B58%22%2F%3E%3C%2Fsvg%3E","slides":[],"date":"2026-10-12","time":"","showDate":true,"caption":"Il corso del sabato visto dal fondo della stanza.\nOtto persone, due torni, zero esperienza richiesta.","categoryId":"cat_mv9jxai2_2iu1svp","paid":false,"partner":"Scuola Arti Grafiche","videoName":"","alsoOn":[],"inStories":false,"storyIds":["st_mv9jxai2_3fi6597"],"editorial":{"eyebrow":"","title":"","sub":""},"status":"in_revisione","revisions":1,"internalNote":"","clientNote":"Il reel è bello ma non si capisce che il corso è aperto ai principianti. Potete aggiungere una scritta nei primi secondi?","clientNoteAt":"2026-10-15T13:05:24.074Z","history":[{"at":"2026-10-15T13:05:24.074Z","from":"da_approvare","to":"in_revisione","by":"cliente","note":"Il reel è bello ma non si capisce che il corso è aperto ai principianti. Potete aggiungere una scritta nei primi secondi?"}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2ubvj5o","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":70,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22-12.00000000000001%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20-12.00000000000001%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-14","time":"","showDate":true,"caption":"Le mani di Giulia dopo una giornata di tornio.\nQuesta è la parte che non finisce mai nelle foto di prodotto.","categoryId":"cat_mv9jxai2_2g86o7f","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":["st_mv9jxai2_3mcuo0r"],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2vt7ia8","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":80,"kind":"carosello","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%2292%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%23D6C06A%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[{"id":"sl_mv9jxai2_2w16x3g","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%2292%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%23D6C06A%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai2_2x3tkrh","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%237E6B59%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%2260%22%20width%3D%22320%22%20height%3D%22170%22%20rx%3D%2216%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%22260%22%20width%3D%22208%22%20height%3D%22150%22%20rx%3D%2216%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai2_2ywkr0f","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Ccircle%20cx%3D%22108%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","caption":""}],"date":"2026-10-17","time":"","showDate":true,"caption":"Il nostro forno ha 34 anni ed è ancora quello giusto.\nTre cose che abbiamo imparato a non toccare.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_2zy66ml","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":90,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%2240%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%2040%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-19","time":"","showDate":true,"caption":"Nuovo smalto, nome provvisorio: Nebbia.\nDitecelo voi come si dovrebbe chiamare.","categoryId":"cat_mv9jxai2_2g86o7f","paid":true,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_304jvhk","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":100,"kind":"reel","mediaUrl":"","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F6E8E0%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%23CDA18A%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%237A4A34%22%2F%3E%3C%2Fsvg%3E","slides":[],"date":"2026-10-22","time":"","showDate":true,"caption":"","categoryId":"cat_mv9jxai2_2iu1svp","paid":true,"partner":"Marta Bellini","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.093Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_31u2agt","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":110,"kind":"editoriale","mediaUrl":"","coverUrl":"","slides":[],"date":"2026-10-24","time":"","showDate":true,"caption":"","categoryId":"cat_mv9jxai2_2jpuc1l","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"Dalla bottega","title":"Perché non vendiamo pezzi perfetti","sub":"La variazione non è un difetto di produzione: è la prova che dietro c'è una persona."},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.113Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_3250bgq","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":120,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Cpath%20d%3D%22M88%20500%20L88%20225%20A112.00000000000001%20112.00000000000001%200%200%201%20312%20225%20L312%20500Z%22%20fill%3D%22%237E6B59%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22290%22%20r%3D%2256.00000000000001%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-27","time":"","showDate":true,"caption":"","categoryId":"cat_mv9jxai2_2g86o7f","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.141Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_33paxle","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":10,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%239FB8B5%22%2F%3E%3Cellipse%20cx%3D%22-52%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23E7F0EF%22%20transform%3D%22rotate(-18%20-52%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%233D5B58%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-03","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2g86o7f","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_34bj4s5","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":20,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22244%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20244%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-07","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_35jy7qx","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":30,"kind":"carosello","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22152%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20152%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-11","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2jpuc1l","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_36fpr74","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":40,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22-76%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20-76%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-15","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2g86o7f","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_37acw7e","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":50,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23A3B1C6%22%2F%3E%3Cellipse%20cx%3D%22148%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23EAEEF5%22%20transform%3D%22rotate(-18%20148%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%233F4F6B%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-19","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_38fjr1n","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-09","order":60,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23E7F0EF%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%239FB8B5%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%233D5B58%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-09-23","showDate":true,"caption":"Archivio settembre 2026.","categoryId":"cat_mv9jxai2_2jpuc1l","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_395biky","accountId":"ac_mv9jxai2_2f636xb","month":"2026-10","order":10,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22640%22%20viewBox%3D%220%200%20360%20640%22%3E%3Crect%20width%3D%22360%22%20height%3D%22640%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22169.2%22%20cy%3D%22230.39999999999998%22%20rx%3D%22151.2%22%20ry%3D%22179.20000000000002%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20169.2%20230.39999999999998)%22%2F%3E%3Cellipse%20cx%3D%22244.8%22%20cy%3D%22473.6%22%20rx%3D%22122.4%22%20ry%3D%22128%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-05","showDate":true,"caption":"Il tornio in 15 secondi.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_3avow00","accountId":"ac_mv9jxai2_2f636xb","month":"2026-10","order":20,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22640%22%20viewBox%3D%220%200%20360%20640%22%3E%3Crect%20width%3D%22360%22%20height%3D%22640%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%22234%22%20cy%3D%22268.8%22%20r%3D%22129.6%22%20fill%3D%22%23D6C06A%22%2F%3E%3Crect%20y%3D%22435.20000000000005%22%20width%3D%22360%22%20height%3D%22204.8%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-11","showDate":true,"caption":"Smalto che cambia colore in cottura.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_3bawv1k","accountId":"ac_mv9jxai2_2f636xb","month":"2026-10","order":30,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22640%22%20viewBox%3D%220%200%20360%20640%22%3E%3Crect%20width%3D%22360%22%20height%3D%22640%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22230.4%22%20cy%3D%22230.39999999999998%22%20rx%3D%22151.2%22%20ry%3D%22179.20000000000002%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20230.4%20230.39999999999998)%22%2F%3E%3Cellipse%20cx%3D%22244.8%22%20cy%3D%22473.6%22%20rx%3D%22122.4%22%20ry%3D%22128%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-17","showDate":true,"caption":"Risposta: sì, si può imparare da adulti.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.161Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai2_3cr88nj","accountId":"ac_mv9jxai2_2f636xb","month":"2026-10","order":40,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22640%22%20viewBox%3D%220%200%20360%20640%22%3E%3Crect%20width%3D%22360%22%20height%3D%22640%22%20fill%3D%22%23F6E8E0%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22320%22%20r%3D%22165.6%22%20fill%3D%22none%22%20stroke%3D%22%23CDA18A%22%20stroke-width%3D%2232.4%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22320%22%20r%3D%2297.2%22%20fill%3D%22none%22%20stroke%3D%22%237A4A34%22%20stroke-width%3D%2225.200000000000003%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22320%22%20r%3D%2232.4%22%20fill%3D%22%237A4A34%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-23","showDate":true,"caption":"Il suono della bottega alle 7 del mattino.","categoryId":"cat_mv9jxai2_2hx6ffq","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.182Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.074Z"},{"id":"post_mv9jxai3_4c4uk6o","accountId":"ac_mv9jxai3_48zfytj","month":"2026-10","order":10,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Ccircle%20cx%3D%22128%22%20cy%3D%22210%22%20r%3D%22144%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Crect%20y%3D%22340%22%20width%3D%22400%22%20height%3D%22160%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-04","showDate":true,"caption":"Risotto allo zafferano, versione corta: riso, brodo, pazienza.","categoryId":"cat_mv9jxai3_49g8fpe","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"pubblicato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.075Z"},{"id":"post_mv9jxai3_4dhtrfb","accountId":"ac_mv9jxai3_48zfytj","month":"2026-10","order":20,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-87.99999999999999%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-87.99999999999999%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-09","showDate":true,"caption":"Il menù di questa settimana è scritto a mano ogni lunedì.","categoryId":"cat_mv9jxai3_49g8fpe","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"approvato","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.075Z"},{"id":"post_mv9jxai3_4ea5v80","accountId":"ac_mv9jxai3_48zfytj","month":"2026-10","order":30,"kind":"reel","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22140%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20140%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-14","showDate":true,"caption":"Mezzanotte in cucina, si prepara il brodo del giorno dopo.","categoryId":"cat_mv9jxai3_49g8fpe","paid":true,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.075Z"},{"id":"post_mv9jxai3_4fvc6wa","accountId":"ac_mv9jxai3_48zfytj","month":"2026-10","order":40,"kind":"foto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22-96%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20-96%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[],"date":"2026-10-19","showDate":true,"caption":"Mondeghili. Nove su dieci li ordinano due volte.","categoryId":"cat_mv9jxai3_49g8fpe","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[],"createdAt":"2026-10-15T13:05:24.075Z"},{"id":"post_mv9jxai3_4gfew0w","accountId":"ac_mv9jxai3_48zfytj","month":"2026-10","order":50,"kind":"carosello","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23CDA18A%22%2F%3E%3Cpath%20d%3D%22M0%20105.00000000000001%20L400%20-4.99999999999999%20L400%20195%20L0%20305.00000000000006Z%22%20fill%3D%22%237A4A34%22%2F%3E%3Cpath%20d%3D%22M0%20430%20L400%20370%20L400%20500%20L0%20500Z%22%20fill%3D%22%23F6E8E0%22%2F%3E%3C%2Fsvg%3E","coverUrl":"","slides":[{"id":"sl_mv9jxai3_4hilwi9","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23CDA18A%22%2F%3E%3Cpath%20d%3D%22M0%20105.00000000000001%20L400%20-4.99999999999999%20L400%20195%20L0%20305.00000000000006Z%22%20fill%3D%22%237A4A34%22%2F%3E%3Cpath%20d%3D%22M0%20430%20L400%20370%20L400%20500%20L0%20500Z%22%20fill%3D%22%23F6E8E0%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai3_4irf8ch","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%234F5E4A%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%2260%22%20width%3D%22320%22%20height%3D%22170%22%20rx%3D%2216%22%20fill%3D%22%23EEF1E9%22%2F%3E%3Crect%20x%3D%2240%22%20y%3D%22260%22%20width%3D%22208%22%20height%3D%22150%22%20rx%3D%2216%22%20fill%3D%22%23A9B7A0%22%2F%3E%3C%2Fsvg%3E","caption":""},{"id":"sl_mv9jxai3_4jgz7fv","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Cpath%20d%3D%22M88%20500%20L88%20225%20A112.00000000000001%20112.00000000000001%200%200%201%20312%20225%20L312%20500Z%22%20fill%3D%22%237E6B59%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22290%22%20r%3D%2256.00000000000001%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","caption":""}],"date":"2026-10-24","showDate":true,"caption":"Come nasce il menù: tre passaggi, nessun software.","categoryId":"cat_mv9jxai3_49g8fpe","paid":false,"partner":"","videoName":"","alsoOn":[],"inStories":false,"storyIds":[],"editorial":{"eyebrow":"","title":"","sub":""},"status":"da_approvare","revisions":0,"internalNote":"","clientNote":"","clientNoteAt":"","history":[{"at":"2026-10-15T13:05:24.205Z","from":"bozza","to":"da_approvare","by":"studio","note":""}],"createdAt":"2026-10-15T13:05:24.075Z"}],"stories":[{"id":"st_mv9jxai2_3diuoon","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":10,"kind":"story","title":"Forno aperto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-32.4%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-32.4%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","frames":[],"date":"2026-10-02","note":"","isUgc":false,"status":"approvato"},{"id":"st_mv9jxai2_3e4wdha","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":20,"kind":"story","title":"Nuovo smalto","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%2289.10000000000001%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%2089.10000000000001%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","frames":[],"date":"2026-10-08","note":"","isUgc":false,"status":"approvato"},{"id":"st_mv9jxai2_3fi6597","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":30,"kind":"storyboard","title":"Corso del sabato — 5 frame","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-10.799999999999995%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-10.799999999999995%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","frames":[{"id":"fr_mv9jxai2_3g0t9sx","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-10.799999999999995%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-10.799999999999995%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","note":"Hook"},{"id":"fr_mv9jxai2_3hohkc8","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%2245.900000000000006%22%20cy%3D%22201.6%22%20r%3D%2297.2%22%20fill%3D%22%23D6C06A%22%2F%3E%3Crect%20y%3D%22326.40000000000003%22%20width%3D%22270%22%20height%3D%22153.6%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","note":"Contesto"},{"id":"fr_mv9jxai2_3ixydou","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22-26.999999999999993%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20-26.999999999999993%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","note":"Dettaglio"},{"id":"fr_mv9jxai2_3jw386r","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%2248.6%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%2048.6%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","note":"Prova"},{"id":"fr_mv9jxai2_3kave16","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cpath%20d%3D%22M0%20326.4%20L270%20220.79999999999998%20L270%20412.79999999999995%20L0%20518.4000000000001Z%22%20fill%3D%22%237E6B59%22%2F%3E%3Cpath%20d%3D%22M0%20412.8%20L270%20355.2%20L270%20480%20L0%20480Z%22%20fill%3D%22%23F2ECE4%22%2F%3E%3C%2Fsvg%3E","note":"Call to action"}],"date":"2026-10-12","note":"","isUgc":false,"status":"approvato"},{"id":"st_mv9jxai2_3lczfct","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":40,"kind":"story","title":"Domande e risposte","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-29.699999999999996%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-29.699999999999996%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","frames":[],"date":"2026-10-15","note":"","isUgc":false,"status":"bozza"},{"id":"st_mv9jxai2_3mcuo0r","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":50,"kind":"storyboard","title":"Unboxing cliente (UGC)","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%237E6B59%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%2257.599999999999994%22%20width%3D%22216%22%20height%3D%22163.20000000000002%22%20rx%3D%2210.8%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%22249.60000000000002%22%20width%3D%22140.4%22%20height%3D%22144%22%20rx%3D%2210.8%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","frames":[{"id":"fr_mv9jxai2_3n65ewo","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%237E6B59%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%2257.599999999999994%22%20width%3D%22216%22%20height%3D%22163.20000000000002%22%20rx%3D%2210.8%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%22249.60000000000002%22%20width%3D%22140.4%22%20height%3D%22144%22%20rx%3D%2210.8%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","note":"Hook"},{"id":"fr_mv9jxai2_3ogbrk5","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%2297.2%22%20cy%3D%22201.6%22%20r%3D%2297.2%22%20fill%3D%22%23D6C06A%22%2F%3E%3Crect%20y%3D%22326.40000000000003%22%20width%3D%22270%22%20height%3D%22153.6%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","note":"Contesto"},{"id":"fr_mv9jxai2_3pdeork","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23F7F1DD%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22240%22%20r%3D%22124.2%22%20fill%3D%22none%22%20stroke%3D%22%23D6C06A%22%20stroke-width%3D%2224.3%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22240%22%20r%3D%2272.9%22%20fill%3D%22none%22%20stroke%3D%22%237A6420%22%20stroke-width%3D%2218.900000000000002%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22240%22%20r%3D%2224.3%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","note":"Dettaglio"},{"id":"fr_mv9jxai2_3qyv36y","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cpath%20d%3D%22M0%20148.8%20L270%2043.199999999999996%20L270%20235.2%20L0%20340.79999999999995Z%22%20fill%3D%22%237E6B59%22%2F%3E%3Cpath%20d%3D%22M0%20412.8%20L270%20355.2%20L270%20480%20L0%20480Z%22%20fill%3D%22%23F2ECE4%22%2F%3E%3C%2Fsvg%3E","note":"Prova"},{"id":"fr_mv9jxai2_3r5at3t","url":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22199.8%22%20cy%3D%22172.79999999999998%22%20rx%3D%22113.39999999999999%22%20ry%3D%22134.4%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20199.8%20172.79999999999998)%22%2F%3E%3Cellipse%20cx%3D%22183.60000000000002%22%20cy%3D%22355.2%22%20rx%3D%2291.80000000000001%22%20ry%3D%2296%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","note":"Call to action"}],"date":"2026-10-19","note":"","isUgc":true,"status":"bozza"},{"id":"st_mv9jxai2_3s4at01","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":60,"kind":"story","title":"Ultimi pezzi","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22270%22%20height%3D%22480%22%20viewBox%3D%220%200%20270%20480%22%3E%3Crect%20width%3D%22270%22%20height%3D%22480%22%20fill%3D%22%237E6B59%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%2257.599999999999994%22%20width%3D%22216%22%20height%3D%22163.20000000000002%22%20rx%3D%2210.8%22%20fill%3D%22%23F2ECE4%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%22249.60000000000002%22%20width%3D%22140.4%22%20height%3D%22144%22%20rx%3D%2210.8%22%20fill%3D%22%23C9B9A6%22%2F%3E%3C%2Fsvg%3E","frames":[],"date":"2026-10-24","note":"","isUgc":false,"status":"bozza"},{"id":"st_mv9jxai2_3t1po8e","accountId":"ac_mv9jxai2_2ekmwaz","month":"2026-10","order":70,"kind":"story","title":"Tazza Noce, 220 ml.","mediaUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22500%22%20viewBox%3D%220%200%20400%20500%22%3E%3Crect%20width%3D%22400%22%20height%3D%22500%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%220%22%20cy%3D%22180%22%20rx%3D%22168%22%20ry%3D%22140%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%200%20180)%22%2F%3E%3Cellipse%20cx%3D%22272%22%20cy%3D%22370%22%20rx%3D%22136%22%20ry%3D%22100%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","frames":[],"date":"2026-10-08","note":"","isUgc":false,"status":"bozza","fromPostId":"post_mv9jxai2_2rx26vi"}],"highlights":[{"id":"hl_mv9jxai2_3u60fwf","accountId":"ac_mv9jxai2_2ekmwaz","title":"Corsi","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-12.800000000000002%22%20cy%3D%2257.599999999999994%22%20rx%3D%2267.2%22%20ry%3D%2244.800000000000004%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-12.800000000000002%2057.599999999999994)%22%2F%3E%3Cellipse%20cx%3D%22108.80000000000001%22%20cy%3D%22118.4%22%20rx%3D%2254.400000000000006%22%20ry%3D%2232%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","storyIds":[]},{"id":"hl_mv9jxai2_3v6x915","accountId":"ac_mv9jxai2_2ekmwaz","title":"Bottega","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20fill%3D%22%23D6C06A%22%2F%3E%3Cellipse%20cx%3D%22-36.8%22%20cy%3D%2257.599999999999994%22%20rx%3D%2267.2%22%20ry%3D%2244.800000000000004%22%20fill%3D%22%23F7F1DD%22%20transform%3D%22rotate(-18%20-36.8%2057.599999999999994)%22%2F%3E%3Cellipse%20cx%3D%22108.80000000000001%22%20cy%3D%22118.4%22%20rx%3D%2254.400000000000006%22%20ry%3D%2232%22%20fill%3D%22%237A6420%22%2F%3E%3C%2Fsvg%3E","storyIds":[]},{"id":"hl_mv9jxai2_3w7v6ts","accountId":"ac_mv9jxai2_2ekmwaz","title":"Smalti","coverUrl":"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20fill%3D%22%23C9B9A6%22%2F%3E%3Cellipse%20cx%3D%22-27.199999999999996%22%20cy%3D%2257.599999999999994%22%20rx%3D%2267.2%22%20ry%3D%2244.800000000000004%22%20fill%3D%22%23F2ECE4%22%20transform%3D%22rotate(-18%20-27.199999999999996%2057.599999999999994)%22%2F%3E%3Cellipse%20cx%3D%22108.80000000000001%22%20cy%3D%22118.4%22%20rx%3D%2254.400000000000006%22%20ry%3D%2232%22%20fill%3D%22%237E6B59%22%2F%3E%3C%2Fsvg%3E","storyIds":[]}],"ugcSlots":[{"id":"ugc_mv9jxai3_3zjouot","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-03","mode":"autonoma","status":"consegnato","brief":"Cliente che scarta il pacco","creatorId":"","note":""},{"id":"ugc_mv9jxai3_4003wwo","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-07","mode":"creator","status":"girato","brief":"Colazione con la tazza Noce","creatorId":"cr_mv9jxai3_3xqjolh","note":""},{"id":"ugc_mv9jxai3_41mhjr5","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-10","mode":"autonoma","status":"brief","brief":"Recensione in 15 secondi","creatorId":"","note":""},{"id":"ugc_mv9jxai3_42b58zo","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-14","mode":"creator","status":"brief","brief":"Il corso del sabato, visto da chi partecipa","creatorId":"cr_mv9jxai3_3xqjolh","note":""},{"id":"ugc_mv9jxai3_43t4gbz","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-18","mode":"autonoma","status":"idea","brief":"","creatorId":"","note":""},{"id":"ugc_mv9jxai3_44trdoq","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-21","mode":"template","status":"idea","brief":"Template \"la mia prima ciotola\"","creatorId":"","note":""},{"id":"ugc_mv9jxai3_453u1oz","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-25","mode":"creator","status":"idea","brief":"Da definire con Dario","creatorId":"cr_mv9jxai3_3ycba9j","note":""},{"id":"ugc_mv9jxai3_46spe9c","accountId":"ac_mv9jxai2_2ekmwaz","date":"2026-10-28","mode":"autonoma","status":"idea","brief":"","creatorId":"","note":""}],"creators":[{"id":"cr_mv9jxai3_3xqjolh","clientId":"cl_mv9jxai2_2d438hw","name":"Marta Bellini","handle":"@martabellini","followers":24300,"fee":450,"status":"accordo","note":"Preferisce girare di mattina, luce naturale."},{"id":"cr_mv9jxai3_3ycba9j","clientId":"cl_mv9jxai2_2d438hw","name":"Dario Lupo","handle":"@dariolupo","followers":9800,"fee":220,"status":"contattato","note":"Risposto alla prima mail, in attesa di tariffa."}],"categories":[{"id":"cat_mv9jxai2_2g86o7f","clientId":"cl_mv9jxai2_2d438hw","name":"Prodotto","color":"#9A5B3C","description":"Pezzi, serie, nuovi smalti"},{"id":"cat_mv9jxai2_2hx6ffq","clientId":"cl_mv9jxai2_2d438hw","name":"Dietro le quinte","color":"#4F5E4A","description":"Bottega, processo, mani al lavoro"},{"id":"cat_mv9jxai2_2iu1svp","clientId":"cl_mv9jxai2_2d438hw","name":"Community","color":"#3F4F6B","description":"Corsi, clienti, domande e risposte"},{"id":"cat_mv9jxai2_2jpuc1l","clientId":"cl_mv9jxai2_2d438hw","name":"Cultura materiale","color":"#6E4C57","description":"Perché la ceramica si fa così"},{"id":"cat_mv9jxai3_49g8fpe","clientId":"cl_mv9jxai3_476iemm","name":"Piatti","color":"#7A4A34","description":"Il menù, i singoli piatti"},{"id":"cat_mv9jxai3_4avakpt","clientId":"cl_mv9jxai3_476iemm","name":"Persone in cucina","color":"#4F5E4A","description":"Brigata, fornitori, servizio"},{"id":"cat_mv9jxai3_4bgrt1d","clientId":"cl_mv9jxai3_476iemm","name":"Sala","color":"#3F4F6B","description":"Ambiente, serate, eventi"},{"id":"cat_mv9jxai3_4n3863o","clientId":"cl_mv9jxai3_4k8sip6","name":"Collezioni","color":"#55436B","description":"Pezzi e linee"},{"id":"cat_mv9jxai3_4ooqmav","clientId":"cl_mv9jxai3_4k8sip6","name":"Processo orafo","color":"#3D5B58","description":"Banco, fusione, finitura"}]};
+</script>
+<script>
+/* src/js/30-client-data.js */
+/* ============================================================
+   Ideology — the client link's data contract
+
+   This file is the wall between the studio and the client.
+
+   The client link is a separate page. It does not load the
+   editor, the UGC planner, the client registry or anything else
+   the studio uses — open its source and none of that code is
+   there. What it loads is this file, which does exactly two
+   things:
+
+     read(token)    → the only data that client may see
+     submit(...)    → the only changes that client may make
+
+   Both are written as if a server were on the other side,
+   because one day there will be. `read` is the response body of
+   GET /api/anteprima?c=<token>; `submit` is the body of POST
+   /api/anteprima. Swapping the local document for fetch() is a
+   change to these two functions and nothing else.
+
+   What never crosses:
+     · other clients — the token selects exactly one
+     · drafts — the studio decides when something is ready
+     · internal notes, approval history, cross-posting plans
+     · UGC plans, creators, budgets, monthly commitments
+     · the studio's own filters, settings or backup
+
+   What the client may write: an approval, or a change request
+   with a message. Nothing else, and only on their own content —
+   addressed by id, never by position, so a reordered month can
+   never route an approval onto the wrong post.
+   ============================================================ */
+
+window.IDEC = window.IDEC || {};
+
+(function (C, A) {
+  'use strict';
+
+  var KEY = 'ideology.content.v1';
+
+  /* The client's own vocabulary. The studio has five internal
+     states; the client is shown four, in their own words, and
+     only ever sees three of them. "Bozza" has no client-facing
+     name because a draft never reaches this page. */
+  C.STATES = {
+    da_approvare: { key: 'da_approvare', label: 'Da rivedere',      c: 'var(--st-approvare)',  sub: 'var(--st-approvare-sub)',  todo: true },
+    in_revisione: { key: 'in_revisione', label: 'Modifica chiesta', c: 'var(--st-revisione)',  sub: 'var(--st-revisione-sub)',  todo: false },
+    approvato:    { key: 'approvato',    label: 'Approvato',        c: 'var(--st-approvato)',  sub: 'var(--st-approvato-sub)',  todo: false },
+    pubblicato:   { key: 'pubblicato',   label: 'Pubblicato',       c: 'var(--st-pubblicato)', sub: 'var(--st-pubblicato-sub)', todo: false }
+  };
+  C.stateOf = function (k) { return C.STATES[k] || C.STATES.da_approvare; };
+
+  /* Posts a draft never leaves the studio. */
+  function isVisible(p) { return p && p.status && p.status !== 'bozza'; }
+
+  /* True when the page is running on the baked-in example rather
+     than on a document the studio actually wrote. The page says so,
+     and the token check relaxes, because a demo nobody can open is
+     not a demo. */
+  C.isDemo = false;
+
+  function readDoc() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+    if (raw) {
+      try {
+        var parsed = JSON.parse(raw);
+        C.isDemo = !!parsed.__demo;
+        return parsed;
+      } catch (e) { /* unreadable — fall through to the example */ }
+    }
+    if (window.__IDEOLOGY_DEMO__) {
+      C.isDemo = true;
+      var demo = JSON.parse(JSON.stringify(window.__IDEOLOGY_DEMO__));
+      demo.__demo = true;
+      /* Persist it so an approval made here survives a reload, the
+         way it would against a real document. */
+      try { localStorage.setItem(KEY, JSON.stringify(demo)); } catch (e) {}
+      return demo;
+    }
+    C.isDemo = false;
+    return null;
+  }
+
+  /* One post, reduced to the fields a client may see. Written as
+     an allow-list: a field added to the studio's record does not
+     appear here until someone decides it should. */
+  function projectPost(p, categories) {
+    var cat = null;
+    if (p.categoryId) {
+      for (var i = 0; i < categories.length; i++) {
+        if (categories[i].id === p.categoryId) {
+          cat = { name: categories[i].name, color: categories[i].color };
+          break;
+        }
+      }
+    }
+    return {
+      id: p.id,
+      accountId: p.accountId,
+      month: p.month,
+      kind: p.kind,
+      coverUrl: p.coverUrl || '',
+      mediaUrl: p.mediaUrl || '',
+      slides: (p.slides || []).map(function (s) { return { id: s.id, url: s.url || '' }; }),
+      editorial: p.kind === 'editoriale'
+        ? { eyebrow: (p.editorial || {}).eyebrow || '', title: (p.editorial || {}).title || '', sub: (p.editorial || {}).sub || '' }
+        : null,
+      date: p.date || '',
+      showDate: !!p.showDate,
+      caption: p.caption || '',
+      category: cat,
+      paid: !!p.paid,
+      partner: (p.partner || '').trim(),
+      status: p.status,
+      clientNote: p.clientNote || '',
+      clientNoteAt: p.clientNoteAt || '',
+      revisions: p.revisions || 0
+    };
+  }
+
+  /* GET /api/anteprima?c=<token> */
+  C.read = function (token) {
+    token = String(token || '').trim();
+    var doc = readDoc();
+    if (!doc || !Array.isArray(doc.clients)) return null;
+
+    var cl = null;
+    doc.clients.forEach(function (c) {
+      if (c.shareToken === token || c.slug === token) cl = c;
+    });
+    /* On the example document a missing token opens the first client,
+       so the page can be looked at without one. Against a real
+       document a token is always required. */
+    if (!cl && C.isDemo && !token) cl = doc.clients[0] || null;
+    if (!cl) return null;
+
+    var accIds = {};
+    (cl.accounts || []).forEach(function (a) { accIds[a.id] = 1; });
+
+    var cats = (doc.categories || []).filter(function (c) { return c.clientId === cl.id; });
+
+    /* A post can be published on more than one of the client's
+       accounts. It is still one piece of content, so it is sent
+       once per account it appears on, carrying the same id — the
+       client approves the content, not a copy of it. */
+    var posts = [];
+    (doc.posts || []).forEach(function (p) {
+      if (!isVisible(p)) return;
+      var on = [];
+      if (accIds[p.accountId]) on.push(p.accountId);
+      (p.alsoOn || []).forEach(function (id) { if (accIds[id]) on.push(id); });
+      if (!on.length) return;
+      on.forEach(function (accId) {
+        var out = projectPost(p, cats);
+        out.accountId = accId;
+        posts.push(out);
+      });
+    });
+
+    posts.sort(function (a, b) {
+      var ka = a.date || '￿', kb = b.date || '￿';
+      return ka === kb ? 0 : ka.localeCompare(kb);
+    });
+
+    var months = {};
+    posts.forEach(function (p) { if (p.month) months[p.month] = 1; });
+
+    return {
+      demo: C.isDemo,
+      token: cl.shareToken,
+      client: {
+        name: cl.name,
+        slug: cl.slug || '',
+        palette: Object.assign({ bg: '#F2ECE4', ink: '#241E19', accent: '#9A5B3C', alt: '#6E6256' }, cl.palette || {}),
+        accounts: (cl.accounts || []).map(function (a) {
+          var f = A.formatOfAccount(a);
+          return {
+            id: a.id, handle: a.handle || '', platform: a.platform || '',
+            bio: a.bio || '', followers: a.followers || 0, following: a.following || 0,
+            avatarUrl: a.avatarUrl || '',
+            ratio: f.ratio, w: f.w, h: f.h, sizeLabel: f.sizeLabel
+          };
+        })
+      },
+      months: Object.keys(months).sort(),
+      posts: posts
+    };
+  };
+
+  /* POST /api/anteprima
+     action: 'approva' | 'revisione' | 'annulla'
+
+     Three guards, in order: the token must resolve to a client,
+     the post must exist, and the post must belong to that
+     client. Only then does a whitelisted write happen. */
+  C.submit = function (token, postId, action, note) {
+    var doc = readDoc();
+    if (!doc) return { ok: false, error: 'Dati non disponibili' };
+
+    var cl = null;
+    (doc.clients || []).forEach(function (c) {
+      if (c.shareToken === token || c.slug === token) cl = c;
+    });
+    if (!cl && C.isDemo && !token) cl = doc.clients[0] || null;
+    if (!cl) return { ok: false, error: 'Link non valido' };
+
+    var accIds = {};
+    (cl.accounts || []).forEach(function (a) { accIds[a.id] = 1; });
+
+    var post = null;
+    (doc.posts || []).forEach(function (p) { if (p.id === postId) post = p; });
+    if (!post) return { ok: false, error: 'Contenuto non trovato' };
+
+    var mine = accIds[post.accountId] ||
+      (post.alsoOn || []).some(function (id) { return accIds[id]; });
+    if (!mine) return { ok: false, error: 'Contenuto non disponibile' };
+    if (!isVisible(post)) return { ok: false, error: 'Contenuto non disponibile' };
+
+    var from = post.status;
+    var to;
+    if (action === 'approva') to = 'approvato';
+    else if (action === 'revisione') to = 'in_revisione';
+    else if (action === 'annulla') to = 'da_approvare';
+    else return { ok: false, error: 'Azione non riconosciuta' };
+
+    if (action === 'revisione') {
+      var msg = String(note || '').trim();
+      if (!msg) return { ok: false, error: 'Serve un messaggio' };
+      /* The client's words go in the client's field. The studio's
+         internal note is never touched — in the tool this replaces,
+         the two shared one field and a change request overwrote
+         whatever the studio had written to itself. */
+      post.clientNote = msg.slice(0, 2000);
+      post.clientNoteAt = new Date().toISOString();
+      post.revisions = (post.revisions || 0) + 1;
+    }
+
+    post.status = to;
+    if (!Array.isArray(post.history)) post.history = [];
+    post.history.push({
+      at: new Date().toISOString(),
+      from: from, to: to, by: 'cliente',
+      note: action === 'revisione' ? post.clientNote : ''
+    });
+
+    try {
+      doc.savedAt = new Date().toISOString();
+      localStorage.setItem(KEY, JSON.stringify(doc));
+    } catch (e) {
+      return { ok: false, error: 'Salvataggio non riuscito' };
+    }
+    return { ok: true, status: to };
+  };
+
+  C.tokenFromUrl = function () {
+    var m = /[?&]c=([^&]+)/.exec(location.search);
+    if (m) return decodeURIComponent(m[1]);
+    m = /[?&]cliente=([^&]+)/.exec(location.search);   /* older links */
+    return m ? decodeURIComponent(m[1]) : '';
+  };
+})(window.IDEC, window.IDE);
+</script>
+<script>
+/* src/js/31-client-app.js */
+/* ============================================================
+   Ideology — the client link
+
+   What the client sees when the studio sends them a month.
+
+   It is deliberately not a smaller copy of the studio tool. The
+   client has one job — go through the month and say yes, or say
+   what to change — so the page is built around that job and has
+   no navigation, no settings and nothing to learn. Everything
+   still to review is at the top; once the month is handled the
+   page says so rather than leaving them guessing.
+   ============================================================ */
+
+(function (C, A) {
+  'use strict';
+
+  var S = {
+    token: '',
+    data: null,
+    accountId: '',
+    month: '',
+    only: 'tutti',     // 'tutti' | 'da_rivedere'
+    view: []           // the posts currently on screen, for the viewer
+  };
+
+  /* ── Reading the data ─────────────────────────────────── */
+
+  function postsFor(accountId, month) {
+    return S.data.posts.filter(function (p) {
+      return p.accountId === accountId && (!month || p.month === month);
+    });
+  }
+
+  function shown() {
+    var list = postsFor(S.accountId, S.month);
+    if (S.only === 'da_rivedere') {
+      list = list.filter(function (p) { return C.stateOf(p.status).todo; });
+    }
+    return list;
+  }
+
+  function counts(list) {
+    var c = { todo: 0, approvato: 0, in_revisione: 0, pubblicato: 0, tot: list.length };
+    list.forEach(function (p) {
+      if (C.stateOf(p.status).todo) c.todo++;
+      if (c[p.status] !== undefined) c[p.status]++;
+    });
+    return c;
+  }
+
+  function reload() {
+    S.data = C.read(S.token);
+    if (!S.data) return false;
+    if (!S.token && S.data.token) S.token = S.data.token;
+    if (!S.accountId || !S.data.client.accounts.some(function (a) { return a.id === S.accountId; })) {
+      S.accountId = (S.data.client.accounts[0] || {}).id || '';
+    }
+    if (!S.month || S.data.months.indexOf(S.month) < 0) {
+      /* open on the month that needs them, else the latest */
+      var best = '';
+      S.data.months.forEach(function (m) {
+        var has = postsFor(S.accountId, m).some(function (p) { return C.stateOf(p.status).todo; });
+        if (has && !best) best = m;
+      });
+      S.month = best || S.data.months[S.data.months.length - 1] || A.thisMonth();
+    }
+    return true;
+  }
+
+  /* ── Pieces ───────────────────────────────────────────── */
+
+  function media(p, opts) {
+    opts = opts || {};
+    var acc = account();
+    var box = A.el('div', {
+      class: 'cl-media' + (opts.contain ? ' contain' : ''),
+      style: '--ratio:' + (acc ? acc.ratio : '4/5') + ';'
+    });
+
+    if (p.kind === 'editoriale' && p.editorial) {
+      var pal = S.data.client.palette;
+      var card = A.el('div', { class: 'cl-ed', style: 'background:' + pal.bg + ';color:' + pal.ink + ';' });
+      if (p.editorial.eyebrow) card.appendChild(A.el('div', { class: 'eye', style: 'color:' + pal.accent + ';', text: p.editorial.eyebrow }));
+      card.appendChild(A.el('div', { class: 'tit', text: p.editorial.title || '' }));
+      card.appendChild(A.el('div', { class: 'rule' }));
+      card.appendChild(A.el('div', { class: 'sub', text: p.editorial.sub || '' }));
+      box.appendChild(card);
+    } else {
+      var url = p.coverUrl || p.mediaUrl || (p.slides[0] ? p.slides[0].url : '');
+      if (url) {
+        var img = A.el('img', { src: url, alt: '', loading: 'lazy' });
+        img.addEventListener('error', function () {
+          img.remove();
+          box.appendChild(A.el('div', { class: 'cl-ph', text: 'Immagine non disponibile' }));
+        });
+        box.appendChild(img);
+      } else {
+        box.appendChild(A.el('div', { class: 'cl-ph', text: 'In preparazione' }));
+      }
+    }
+
+    if (p.kind === 'reel') box.appendChild(A.el('span', { class: 'cl-mk', html: A.icon('play', 13) }));
+    if (p.kind === 'carosello' && p.slides.length > 1) {
+      box.appendChild(A.el('span', { class: 'cl-mk', html: A.icon('layers', 13) + '<i>' + p.slides.length + '</i>' }));
+    }
+    return box;
+  }
+
+  function badges(p) {
+    var row = A.el('div', { class: 'cl-badges' });
+    if (p.showDate && p.date) row.appendChild(A.el('span', { class: 'cl-chip date', text: A.dayLabel(p.date) }));
+    if (p.paid) row.appendChild(A.el('span', { class: 'cl-chip paid', text: 'Sponsorizzato' }));
+    if (p.partner) row.appendChild(A.el('span', { class: 'cl-chip partner', text: 'Con ' + p.partner }));
+    if (p.category) {
+      row.appendChild(A.el('span', {
+        class: 'cl-chip',
+        html: '<i class="dot" style="background:' + p.category.color + '"></i>' + A.esc(p.category.name)
+      }));
+    }
+    return row;
+  }
+
+  function stateTag(p) {
+    var st = C.stateOf(p.status);
+    return A.el('span', {
+      class: 'cl-state',
+      style: 'color:' + st.c + ';background:' + st.sub + ';',
+      html: '<i class="dot" style="background:' + st.c + '"></i>' + A.esc(st.label)
+    });
+  }
+
+  /* The two things a client can do, wherever they are standing. */
+  function actions(p, onDone) {
+    var row = A.el('div', { class: 'cl-actions' });
+    var st = C.stateOf(p.status);
+
+    if (p.status === 'approvato') {
+      row.appendChild(A.el('span', { class: 'cl-done', html: A.icon('check', 14) + 'Approvato' }));
+      row.appendChild(A.el('div', { class: 'cl-grow' }));
+      row.appendChild(A.el('button', {
+        class: 'cl-btn ghost', text: 'Annulla',
+        onclick: function (e) { e.stopPropagation(); act(p, 'annulla', '', onDone); }
+      }));
+      return row;
+    }
+    if (p.status === 'pubblicato') {
+      row.appendChild(A.el('span', { class: 'cl-done pub', text: 'Pubblicato' }));
+      return row;
+    }
+    if (p.status === 'in_revisione') {
+      row.appendChild(A.el('span', { class: 'cl-done rev', html: A.icon('pencil', 13) + 'Modifica chiesta' }));
+      row.appendChild(A.el('div', { class: 'cl-grow' }));
+      row.appendChild(A.el('button', {
+        class: 'cl-btn ghost', text: 'Modifica messaggio',
+        onclick: function (e) { e.stopPropagation(); askChange(p, onDone); }
+      }));
+      return row;
+    }
+
+    row.appendChild(A.el('button', {
+      class: 'cl-btn primary', html: A.icon('check', 14) + 'Approva',
+      onclick: function (e) { e.stopPropagation(); act(p, 'approva', '', onDone); }
+    }));
+    row.appendChild(A.el('button', {
+      class: 'cl-btn', html: A.icon('pencil', 13) + 'Chiedi una modifica',
+      onclick: function (e) { e.stopPropagation(); askChange(p, onDone); }
+    }));
+    return row;
+  }
+
+  function act(p, action, note, onDone) {
+    var res = C.submit(S.token, p.id, action, note);
+    if (!res.ok) { A.toast(res.error); return; }
+    A.toast(action === 'approva' ? 'Approvato' :
+            action === 'revisione' ? 'Richiesta inviata allo studio' : 'Approvazione annullata');
+    reload();
+    if (onDone) onDone();
+    render();
+  }
+
+  function askChange(p, onDone) {
+    var ta = A.el('textarea', {
+      class: 'cl-ta', rows: '5',
+      placeholder: 'Cosa vorresti cambiare? Più sei preciso, meno giri servono.'
+    });
+    ta.value = p.clientNote || '';
+    A.modal({
+      title: 'Chiedi una modifica',
+      body: [
+        A.el('p', {
+          class: 'cl-modal-note',
+          text: 'Il messaggio arriva allo studio insieme al contenuto e resta allegato a questo post.'
+        }),
+        ta
+      ],
+      actions: [
+        { label: 'Annulla' },
+        {
+          label: 'Invia richiesta', kind: 'primary',
+          run: function () {
+            if (!ta.value.trim()) { ta.focus(); return false; }
+            act(p, 'revisione', ta.value, onDone);
+          }
+        }
+      ]
+    });
+  }
+
+  /* ── The full view of one content ─────────────────────── */
+
+  var V = { i: 0, slide: 0 };
+
+  function openViewer(list, id) {
+    A.closeCaptionPeek();
+    S.view = list.slice();
+    V.i = Math.max(0, S.view.findIndex(function (p) { return p.id === id; }));
+    V.slide = 0;
+    A.$('#cl-viewer').classList.add('on');
+    document.body.style.overflow = 'hidden';
+    drawViewer();
+  }
+  function closeViewer() {
+    A.$('#cl-viewer').classList.remove('on');
+    A.clear(A.$('#cl-viewer'));
+    document.body.style.overflow = '';
+    S.view = [];
+  }
+  function step(d) {
+    if (S.view.length < 2) return;
+    V.i = (V.i + d + S.view.length) % S.view.length;
+    V.slide = 0;
+    drawViewer();
+  }
+
+  function drawViewer() {
+    var host = A.$('#cl-viewer');
+    A.clear(host);
+    var p = S.view[V.i];
+    if (!p) return closeViewer();
+    var acc = account();
+
+    var shell = A.el('div', { class: 'cl-vw', role: 'dialog', 'aria-modal': 'true' });
+
+    var left = A.el('div', { class: 'cl-vw-media' });
+    if (p.kind === 'carosello' && p.slides.length > 1) {
+      var stage = A.el('div', { class: 'cl-media contain', style: '--ratio:' + acc.ratio + ';' });
+      var sl = p.slides[V.slide];
+      if (sl && sl.url) stage.appendChild(A.el('img', { src: sl.url, alt: '' }));
+      else stage.appendChild(A.el('div', { class: 'cl-ph', text: 'Slide ' + (V.slide + 1) }));
+      stage.appendChild(A.el('button', {
+        class: 'cl-arrow left', html: '‹', 'aria-label': 'Slide precedente',
+        onclick: function () { V.slide = (V.slide - 1 + p.slides.length) % p.slides.length; drawViewer(); }
+      }));
+      stage.appendChild(A.el('button', {
+        class: 'cl-arrow right', html: '›', 'aria-label': 'Slide successiva',
+        onclick: function () { V.slide = (V.slide + 1) % p.slides.length; drawViewer(); }
+      }));
+      var dots = A.el('div', { class: 'cl-dots' });
+      p.slides.forEach(function (_, i) { dots.appendChild(A.el('i', { class: i === V.slide ? 'on' : '' })); });
+      stage.appendChild(dots);
+      left.appendChild(stage);
+    } else {
+      left.appendChild(media(p, { contain: true }));
+    }
+    shell.appendChild(left);
+
+    var side = A.el('div', { class: 'cl-vw-side' });
+
+    var head = A.el('div', { class: 'cl-vw-head' });
+    var av = A.el('span', { class: 'cl-av' });
+    if (acc.avatarUrl) av.appendChild(A.el('img', { src: acc.avatarUrl, alt: '' }));
+    else av.textContent = A.initials(S.data.client.name);
+    head.appendChild(av);
+    head.appendChild(A.el('span', { class: 'cl-vw-who' }, [
+      A.el('b', { text: acc.handle || S.data.client.name }),
+      A.el('span', { text: acc.platform + (p.showDate && p.date ? ' · ' + A.dayLong(p.date) : '') })
+    ]));
+    head.appendChild(A.el('button', {
+      class: 'cl-x', html: A.icon('x', 16), 'aria-label': 'Chiudi', onclick: closeViewer
+    }));
+    side.appendChild(head);
+
+    var body = A.el('div', { class: 'cl-vw-body' });
+    var tags = badges(p);
+    tags.appendChild(stateTag(p));
+    body.appendChild(tags);
+
+    if (p.caption) body.appendChild(A.el('div', { class: 'cl-caption', text: p.caption }));
+    else body.appendChild(A.el('div', { class: 'cl-caption none', text: 'Nessuna didascalia per questo contenuto.' }));
+
+    if (p.clientNote) {
+      body.appendChild(A.el('div', { class: 'cl-note' }, [
+        A.el('b', { text: 'La tua richiesta' + (p.clientNoteAt ? ' · ' + new Date(p.clientNoteAt).toLocaleDateString('it-IT') : '') }),
+        A.el('span', { text: p.clientNote })
+      ]));
+    }
+    side.appendChild(body);
+
+    side.appendChild(A.el('div', { class: 'cl-vw-foot' }, [actions(p, drawViewer)]));
+    shell.appendChild(side);
+
+    if (S.view.length > 1) {
+      shell.appendChild(A.el('button', { class: 'cl-step prev', html: '‹', 'aria-label': 'Contenuto precedente', onclick: function () { step(-1); } }));
+      shell.appendChild(A.el('button', { class: 'cl-step next', html: '›', 'aria-label': 'Contenuto successivo', onclick: function () { step(1); } }));
+      shell.appendChild(A.el('span', { class: 'cl-count', text: (V.i + 1) + ' / ' + S.view.length }));
+    }
+
+    host.appendChild(shell);
+    host.onclick = function (e) { if (e.target === host) closeViewer(); };
+  }
+
+  /* ── Page ─────────────────────────────────────────────── */
+
+  function account() {
+    var hit = null;
+    S.data.client.accounts.forEach(function (a) { if (a.id === S.accountId) hit = a; });
+    return hit || S.data.client.accounts[0] || { ratio: '4/5', handle: '', platform: '' };
+  }
+
+  function header() {
+    var pal = S.data.client.palette;
+    var bar = A.el('header', { class: 'cl-head' });
+
+    var top = A.el('div', { class: 'cl-head-top' }, [
+      A.el('span', { class: 'cl-mark', text: 'I' }),
+      A.el('div', { class: 'cl-who' }, [
+        A.el('h1', { text: S.data.client.name }),
+        A.el('p', { text: 'Piano editoriale · ' + A.monthLabel(S.month) })
+      ])
+    ]);
+    if (S.data.demo) {
+      top.appendChild(A.el('div', { class: 'cl-grow' }));
+      top.appendChild(A.el('span', { class: 'cl-demo', text: 'Esempio' }));
+    }
+    bar.appendChild(top);
+    bar.appendChild(A.el('div', { class: 'cl-accent', style: 'background:' + pal.accent + ';' }));
+
+    var rows = A.el('div', { class: 'cl-head-rows' });
+
+    var accs = S.data.client.accounts.filter(function (a) {
+      return S.data.posts.some(function (p) { return p.accountId === a.id; });
+    });
+    if (accs.length > 1) {
+      var at = A.el('div', { class: 'cl-pills' });
+      accs.forEach(function (a) {
+        at.appendChild(A.el('button', {
+          class: 'cl-pill', 'aria-pressed': a.id === S.accountId ? 'true' : 'false',
+          text: a.platform,
+          onclick: function () { S.accountId = a.id; render(); }
+        }));
+      });
+      rows.appendChild(at);
+    }
+
+    if (S.data.months.length > 1) {
+      var ms = A.el('select', { class: 'cl-sel', 'aria-label': 'Mese' });
+      S.data.months.forEach(function (m) {
+        ms.appendChild(A.el('option', { value: m, text: A.monthLabel(m), selected: m === S.month }));
+      });
+      ms.addEventListener('change', function () { S.month = ms.value; render(); });
+      rows.appendChild(ms);
+    }
+
+    if (rows.childNodes.length) bar.appendChild(rows);
+    return bar;
+  }
+
+  function summary(all) {
+    var c = counts(all);
+    var wrap = A.el('section', { class: 'cl-summary' });
+
+    if (!all.length) return wrap;
+
+    if (c.todo) {
+      wrap.appendChild(A.el('div', { class: 'cl-ask' }, [
+        A.el('h2', { text: c.todo === 1 ? 'Un contenuto aspetta il tuo ok' : c.todo + ' contenuti aspettano il tuo ok' }),
+        A.el('p', { text: 'Approva quelli che vanno bene. Se qualcosa non torna, scrivi cosa cambiare: la richiesta arriva direttamente allo studio.' })
+      ]));
+    } else {
+      wrap.appendChild(A.el('div', { class: 'cl-ask done' }, [
+        A.el('h2', { html: A.icon('check', 18) + 'Hai rivisto tutto' }),
+        A.el('p', {
+          text: c.in_revisione
+            ? (c.in_revisione === 1 ? 'Una modifica è in mano allo studio.' : c.in_revisione + ' modifiche sono in mano allo studio.')
+            : 'Non manca niente per ' + A.monthLabel(S.month).toLowerCase() + '.'
+        })
+      ]));
+    }
+
+    var strip = A.el('div', { class: 'cl-strip' });
+    [['Da rivedere', c.todo, 'var(--st-approvare)'],
+     ['Approvati', c.approvato, 'var(--st-approvato)'],
+     ['Modifiche chieste', c.in_revisione, 'var(--st-revisione)'],
+     ['Pubblicati', c.pubblicato, 'var(--st-pubblicato)']
+    ].forEach(function (r) {
+      if (!r[1]) return;
+      strip.appendChild(A.el('span', { class: 'cl-count-chip' }, [
+        A.el('i', { class: 'dot', style: 'background:' + r[2] + ';' }),
+        A.el('b', { text: String(r[1]) }),
+        A.el('span', { text: r[0] })
+      ]));
+    });
+    if (c.todo && c.tot > c.todo) {
+      strip.appendChild(A.el('div', { class: 'cl-grow' }));
+      strip.appendChild(A.el('button', {
+        class: 'cl-btn ghost sm',
+        'aria-pressed': S.only === 'da_rivedere' ? 'true' : 'false',
+        text: S.only === 'da_rivedere' ? 'Mostra tutto il mese' : 'Solo da rivedere',
+        onclick: function () { S.only = S.only === 'da_rivedere' ? 'tutti' : 'da_rivedere'; render(); }
+      }));
+    }
+    if (strip.childNodes.length) wrap.appendChild(strip);
+    return wrap;
+  }
+
+  function grid(list) {
+    var g = A.el('section', { class: 'cl-grid' });
+    list.forEach(function (p) {
+      var card = A.el('article', { class: 'cl-card', dataset: { st: p.status, id: p.id } });
+
+      var cell = A.el('div', {
+        class: 'cl-cell', role: 'button', tabindex: '0',
+        'aria-label': 'Apri il contenuto'
+      });
+      cell.appendChild(media(p));
+      cell.addEventListener('click', function () { openViewer(list, p.id); });
+      cell.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openViewer(list, p.id); }
+      });
+      card.appendChild(cell);
+
+      var body = A.el('div', { class: 'cl-body' });
+      var tags = badges(p);
+      tags.appendChild(stateTag(p));
+      body.appendChild(tags);
+
+      var excerpt = null;
+      if (p.caption) {
+        excerpt = A.el('div', { class: 'cl-excerpt', text: p.caption });
+        body.appendChild(excerpt);
+      }
+      if (p.clientNote) {
+        body.appendChild(A.el('div', { class: 'cl-note small' }, [
+          A.el('b', { text: 'La tua richiesta' }),
+          A.el('span', { text: p.clientNote })
+        ]));
+      }
+      card.appendChild(body);
+
+      /* Hovering the content shows the whole caption. The action row is
+         left out on purpose: the caption should not jump up over the
+         buttons while someone is reaching for Approva. */
+      if (excerpt) {
+        A.captionPeek({ trigger: cell, clamp: excerpt, text: p.caption });
+        A.captionPeek({ trigger: body, clamp: excerpt, text: p.caption });
+      }
+
+      card.appendChild(actions(p, null));
+      g.appendChild(card);
+    });
+    return g;
+  }
+
+  function emptyState() {
+    return A.el('div', { class: 'cl-empty' }, [
+      A.el('h2', { text: S.only === 'da_rivedere' ? 'Niente da rivedere' : 'Ancora niente da vedere' }),
+      A.el('p', {
+        text: S.only === 'da_rivedere'
+          ? 'Hai già risposto a tutto quello che c’era in questo mese.'
+          : 'Appena lo studio invia i contenuti di ' + A.monthLabel(S.month).toLowerCase() + ', li trovi qui.'
+      }),
+      S.only === 'da_rivedere'
+        ? A.el('button', { class: 'cl-btn', text: 'Mostra tutto il mese', onclick: function () { S.only = 'tutti'; render(); } })
+        : null
+    ]);
+  }
+
+  function render() {
+    var root = A.$('#cl-root');
+    A.clear(root);
+
+    if (!S.data) {
+      root.appendChild(A.el('div', { class: 'cl-gate' }, [
+        A.el('h1', { text: 'Link non valido' }),
+        A.el('p', { text: 'Questo link di anteprima non è più attivo. Chiedi allo studio di inviartene uno nuovo.' })
+      ]));
+      return;
+    }
+
+    root.appendChild(header());
+    var main = A.el('main', { class: 'cl-main' });
+    var all = postsFor(S.accountId, S.month);
+    main.appendChild(summary(all));
+
+    var list = shown();
+    main.appendChild(list.length ? grid(list) : emptyState());
+
+    main.appendChild(A.el('footer', { class: 'cl-foot' }, [
+      A.el('div', { text: 'Anteprima preparata per ' + S.data.client.name }),
+      A.el('div', { class: 'sig', text: 'Ideology · ideology.it' })
+    ]));
+    root.appendChild(main);
+  }
+
+  /* ── Boot ─────────────────────────────────────────────── */
+
+  document.addEventListener('keydown', function (e) {
+    var v = A.$('#cl-viewer');
+    if (v && v.classList.contains('on')) {
+      if (e.key === 'Escape') return closeViewer();
+      var p = S.view[V.i];
+      var car = p && p.kind === 'carosello' && p.slides.length > 1;
+      if (e.key === 'ArrowLeft') { car ? (V.slide = (V.slide - 1 + p.slides.length) % p.slides.length, drawViewer()) : step(-1); }
+      if (e.key === 'ArrowRight') { car ? (V.slide = (V.slide + 1) % p.slides.length, drawViewer()) : step(1); }
+      return;
+    }
+    var bg = A.$('#modal-bg');
+    if (bg && bg.classList.contains('on') && e.key === 'Escape') A.closeModal();
+  });
+
+  C.boot = function () {
+    S.token = C.tokenFromUrl();
+    reload();
+    if (S.data) document.title = S.data.client.name + ' — Anteprima';
+    render();
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', C.boot);
+  else C.boot();
+})(window.IDEC, window.IDE);
+</script>
+</body>
+</html>

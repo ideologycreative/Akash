@@ -1,0 +1,136 @@
+/* ============================================================
+   Ideology — design tokens
+   Colour rule: the interface is warm-neutral. Saturated colour
+   is reserved for approval state and nothing else, so a glance
+   at the grid reads as status, never as decoration.
+   ============================================================ */
+
+:root {
+  /* surfaces */
+  --paper:      #FBFAF8;
+  --paper-2:    #F3F1ED;
+  --panel:      #FFFFFF;
+  --panel-2:    #FAF9F7;
+  --overlay:    rgba(20,20,24,.46);
+
+  /* ink */
+  --ink:        #16161A;
+  --ink-2:      #4C4C56;
+  --ink-3:      #8A8A93;
+  --ink-4:      #B4B3B8;
+
+  /* structure */
+  --rule:       #E5E2DC;
+  --rule-2:     #D4D0C8;
+
+  /* brand — used only for selection and the wordmark */
+  --cobalt:     #1D3FD8;
+  --cobalt-ink: #142C97;
+  --cobalt-sub: #E9EDFC;
+
+  /* approval states */
+  --st-bozza:        #8B8B95;
+  --st-bozza-sub:    #EDECEA;
+  --st-revisione:    #C2410C;
+  --st-revisione-sub:#FCECE2;
+  --st-approvare:    #9A6B00;
+  --st-approvare-sub:#FBF1D9;
+  --st-approvato:    #0E7A4A;
+  --st-approvato-sub:#E0F2E9;
+  --st-pubblicato:   #44556B;
+  --st-pubblicato-sub:#E9EDF1;
+
+  /* ugc states */
+  --ugc-idea:    #8B8B95;
+  --ugc-brief:   #9A6B00;
+  --ugc-girato:  #1D3FD8;
+  --ugc-consegna:#0E7A4A;
+
+  /* type */
+  --font: 'Schibsted Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --fs-xs:  10.5px;
+  --fs-sm:  11.5px;
+  --fs-md:  13px;
+  --fs-lg:  15px;
+  --fs-xl:  19px;
+  --fs-2xl: 26px;
+
+  /* geometry */
+  --r-cell: 10px;
+  --r-ui:   7px;
+  --r-pill: 999px;
+  --bar-h:  52px;
+  --tab-h:  42px;
+
+  /* motion */
+  --t: 140ms cubic-bezier(.2,.7,.3,1);
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #0F0F12;
+    --paper-2:    #16161A;
+    --panel:      #17171B;
+    --panel-2:    #1D1D22;
+    --overlay:    rgba(0,0,0,.66);
+    --ink:        #F2F1EE;
+    --ink-2:      #B9B8BD;
+    --ink-3:      #85848C;
+    --ink-4:      #5C5B63;
+    --rule:       #2A2A31;
+    --rule-2:     #3A3A43;
+    --cobalt:     #7C8DFF;
+    --cobalt-ink: #AEB9FF;
+    --cobalt-sub: #1E2142;
+    --st-bozza:        #9A99A3;
+    --st-bozza-sub:    #26262C;
+    --st-revisione:    #F0834E;
+    --st-revisione-sub:#331C12;
+    --st-approvare:    #D9A520;
+    --st-approvare-sub:#2E2510;
+    --st-approvato:    #3FBE83;
+    --st-approvato-sub:#102B20;
+    --st-pubblicato:   #8FA6C0;
+    --st-pubblicato-sub:#1A222C;
+    --ugc-idea:    #9A99A3;
+    --ugc-brief:   #D9A520;
+    --ugc-girato:  #7C8DFF;
+    --ugc-consegna:#3FBE83;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:      #0F0F12;
+  --paper-2:    #16161A;
+  --panel:      #17171B;
+  --panel-2:    #1D1D22;
+  --overlay:    rgba(0,0,0,.66);
+  --ink:        #F2F1EE;
+  --ink-2:      #B9B8BD;
+  --ink-3:      #85848C;
+  --ink-4:      #5C5B63;
+  --rule:       #2A2A31;
+  --rule-2:     #3A3A43;
+  --cobalt:     #7C8DFF;
+  --cobalt-ink: #AEB9FF;
+  --cobalt-sub: #1E2142;
+  --st-bozza:        #9A99A3;
+  --st-bozza-sub:    #26262C;
+  --st-revisione:    #F0834E;
+  --st-revisione-sub:#331C12;
+  --st-approvare:    #D9A520;
+  --st-approvare-sub:#2E2510;
+  --st-approvato:    #3FBE83;
+  --st-approvato-sub:#102B20;
+  --st-pubblicato:   #8FA6C0;
+  --st-pubblicato-sub:#1A222C;
+  --ugc-idea:    #9A99A3;
+  --ugc-brief:   #D9A520;
+  --ugc-girato:  #7C8DFF;
+  --ugc-consegna:#3FBE83;
+}
