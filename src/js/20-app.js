@@ -84,33 +84,47 @@
       onclick: function () { toggleTheme(); }
     }));
 
-    if (A.dirty) {
-      foot.appendChild(A.el('button', {
-        class: 'btn primary sm rail-save', html: A.icon('check', 13) + '<span class="rtxt">Salva</span>',
-        title: 'Salva le modifiche', onclick: function () { A.save(); }
-      }));
-      foot.appendChild(A.el('button', {
-        class: 'btn ghost sm rail-save', html: A.icon('left', 13) + '<span class="rtxt">Annulla</span>',
-        title: 'Torna all\'ultimo salvataggio',
-        onclick: function () {
-          A.confirm({
-            title: 'Annullare le modifiche?',
-            body: 'Tutto quello che non è stato salvato torna com\'era all\'ultimo salvataggio.',
-            ok: 'Annulla modifiche', danger: true,
-            run: function () { A.revert(); A.toast('Modifiche annullate'); }
-          });
-        }
-      }));
-    } else {
-      var saved = A.el('span', { class: 'saved', id: 'save-state', dataset: { s: 'saved' }, style: 'padding:7px 10px;' });
-      saved.appendChild(A.el('span', { class: 'pip' }));
-      saved.appendChild(document.createTextNode('Salvato'));
-      foot.appendChild(saved);
+    if (A.remote && A.remote.on) {
+      foot.appendChild(railItem({ label: 'Team', icon: 'users', title: 'Studio, colleghi e accesso', onclick: function () { A.session.openTeam(); } }));
     }
+
+    /* Autosave: no Salva button, just the state of the last save. */
+    var saved = A.el('button', {
+      class: 'saved', id: 'save-state', type: 'button', style: 'padding:7px 10px;',
+      onclick: function () { if (A.ui.saveState === 'error' || A.ui.saveState === 'offline') A.saveNow(); }
+    });
+    foot.appendChild(saved);
+    paintSaveState(saved);
 
     r.appendChild(foot);
     return r;
   }
+
+  var SAVE_LABELS = {
+    saved:    ['Salvato', 'Tutto salvato'],
+    pending:  ['Modifiche…', 'Salvataggio tra un attimo'],
+    saving:   ['Salvataggio…', 'Salvataggio in corso'],
+    offline:  ['Offline', 'Connessione assente: riprovo da solo. Clic per riprovare ora'],
+    conflict: ['Da decidere', 'Un collega ha cambiato la stessa cosa: scegli in basso quale tenere'],
+    error:    ['Non salvato', 'Qualcosa non è stato salvato. Clic per riprovare']
+  };
+
+  function paintSaveState(node) {
+    var st = A.ui.saveState || 'saved';
+    var l = SAVE_LABELS[st] || SAVE_LABELS.saved;
+    node.setAttribute('data-s', st);
+    node.title = l[1];
+    A.clear(node);
+    node.appendChild(A.el('span', { class: 'pip' }));
+    node.appendChild(A.el('span', { class: 'rtxt', text: l[0] }));
+  }
+
+  /* Called by setSaveState: repaints the indicator alone, so typing
+     never triggers a whole-page render. */
+  A.renderSaveState = function () {
+    var n = document.getElementById('save-state');
+    if (n) paintSaveState(n);
+  };
 
   function toggleTheme() {
     var cur = document.documentElement.getAttribute('data-theme');
@@ -205,6 +219,7 @@
     });
 
     var counts = A.serialize().counts;
+    var shared = !!(A.remote && A.remote.on);
     var lines = [
       ['Clienti', counts.clients],
       ['Contenuti feed', counts.posts],
@@ -225,16 +240,18 @@
       body: [
         A.el('p', {
           style: 'margin:0;font-size:12.5px;line-height:1.55;color:var(--ink-2);',
-          text: 'Tutto il lavoro resta in questo browser. Esporta un backup prima di cambiare macchina, o per passare il piano a un collega.'
+          text: shared
+            ? 'Il lavoro è salvato nel database dello studio e lo vedono tutti i colleghi. Il backup è una copia in un file, da tenere da parte.'
+            : 'Tutto il lavoro resta in questo browser. Esporta un backup prima di cambiare macchina, o per passare il piano a un collega.'
         }),
         table,
         A.el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;' }, [
           A.el('button', { class: 'btn', html: A.icon('down', 13) + 'Esporta backup', onclick: A.exportAll }),
-          A.el('button', { class: 'btn', html: A.icon('up', 13) + 'Importa backup', onclick: function () { fileInput.click(); } }),
+          shared ? null : A.el('button', { class: 'btn', html: A.icon('up', 13) + 'Importa backup', onclick: function () { fileInput.click(); } }),
           fileInput
         ])
       ],
-      actions: [
+      actions: shared ? [{ label: 'Chiudi', kind: 'primary' }] : [
         {
           label: 'Ricarica dati demo', kind: 'danger', keepOpen: true, run: function () {
             A.confirm({
@@ -324,10 +341,10 @@
      the link was meant to go and stops, because the alternative is
      handing a client the whole tool. */
   function clientLinkArrived() {
-    var m = /[?&](?:c|cliente)=([^&]+)/.exec(location.search);
+    var m = /[?&](?:c|cliente)=([^&]+)/.exec(location.search) || /[#&]c=([^&]+)/.exec(location.hash);
     if (!m) return false;
 
-    var target = new URL('cliente.html?c=' + m[1], document.baseURI).href;
+    var target = new URL('cliente.html#c=' + m[1], document.baseURI).href;
     var root = A.$('#root');
     A.clear(root);
     root.appendChild(A.el('div', { class: 'gate' }, [
@@ -348,24 +365,36 @@
       if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
     } catch (e) {}
 
+    if (clientLinkArrived()) return;
+
+    if (A.remote && A.remote.misconfigured) {
+      A.session.problem('Configurazione da correggere', A.remote.misconfigured);
+      return;
+    }
+    if (A.remote && A.remote.on) { A.session.start(); return; }
 
     if (!A.load()) { A.seed(); A.save({ quiet: true }); }
     A.index();
+    A.finishBoot();
+  };
 
-    if (clientLinkArrived()) return;
-
-    if (!A.ui.clientId) {
-      var c = A.S.clients[0];
-      if (c) { A.ui.clientId = c.id; A.ui.accountId = c.accounts[0] ? c.accounts[0].id : null; }
-    }
+  /* Common to both modes, once the data is in memory. */
+  A.finishBoot = function () {
+    var c = A.get(A.ui.clientId) ? null : A.S.clients[0];
+    if (c) { A.ui.clientId = c.id; A.ui.accountId = c.accounts[0] ? c.accounts[0].id : null; }
     A.ui.section = 'home';
-
     A.setSaveState('saved');
     A.render();
   };
 
+  /* Leaving the page. Alone, the browser's storage is synchronous, so the
+     last keystrokes are written on the spot. Shared, the save is a
+     request that may not finish in time — so the browser asks first. */
   window.addEventListener('beforeunload', function (e) {
     if (!A.dirty) return;
+    var shared = A.remote && A.remote.on;
+    A.saveNow();
+    if (!shared) return;
     e.preventDefault();
     e.returnValue = '';
     return '';

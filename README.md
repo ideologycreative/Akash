@@ -4,9 +4,14 @@ Strumento interno per **Ideology** (ideology.it): composizione del piano
 editoriale, stories e storyboard, pianificazione UGC, e l'anteprima che il
 cliente usa per approvare.
 
-Niente account, niente server, niente dipendenze: una pagina sola che gira
-anche aprendola da file system. Tutto il lavoro resta nel browser e si
-esporta come backup JSON.
+Funziona in due modi, scelti da `src/js/00-config.js`:
+
+- **Da soli, nel browser** (com'è distribuito): nessun account, nessun
+  server. Il lavoro resta nel browser e si esporta come backup JSON. Per
+  provare lo strumento e per le demo.
+- **Studio condiviso, su Supabase**: login, tutto il team sugli stessi dati,
+  modifiche dei colleghi visibili dal vivo, link cliente servito dal
+  server. Istruzioni in [`supabase/README.md`](supabase/README.md).
 
 ---
 
@@ -144,25 +149,32 @@ diventare un doppione stantio.
 
 ---
 
-## Niente si salva da solo
+## Si salva da solo
 
-Non c'è salvataggio automatico da nessuna parte. Quello che si scrive resta
-in memoria finché non lo si salva, e il controllo è sempre lo stesso: in
-basso nella barra di sinistra compare **Salva** quando c'è qualcosa da
-salvare, con accanto **Annulla**, che riporta tutto all'ultimo salvataggio.
-Chiudendo la scheda con modifiche aperte il browser avvisa.
+Ogni modifica viene salvata un attimo dopo averla fatta (0,7 s): una raffica
+di tasti diventa una sola scrittura. Non c'è un pulsante Salva. In basso
+nella barra di sinistra un indicatore dice a che punto è: *Salvato*,
+*Modifiche…*, *Salvataggio…*, *Offline* (riprova da solo), *Da decidere*
+(un collega ha cambiato la stessa cosa), *Non salvato* (il server ha
+rifiutato qualcosa: clic per riprovare).
 
-Ogni dialogo ha i suoi quattro comandi — **Elimina · Anteprima · Annulla ·
-Salva** — in una barra che resta attaccata in basso, con l'intestazione
-attaccata in alto: non si cerca il pulsante scorrendo. Mentre il dialogo è aperto le modifiche si vedono subito nella
-griglia dietro, così si lavora guardando il risultato; *Annulla* le
-ripristina esattamente com'erano, e se il contenuto era appena stato creato
-lo toglie del tutto. *Elimina* invece scrive subito, perché cancellare non
-è una modifica in sospeso.
+Ogni dialogo ha i suoi comandi — **Elimina · Anteprima · Annulla modifiche ·
+Fatto** — in una barra che resta attaccata in basso. Mentre il dialogo è
+aperto le modifiche si vedono subito nella griglia dietro e vengono salvate.
+Chiudere il dialogo, in qualunque modo, le tiene. *Annulla modifiche*
+riporta il contenuto esattamente com'era quando il dialogo è stato aperto, e
+salva il ripristino; su un contenuto appena creato si chiama *Annulla* e lo
+toglie.
 
-Fanno eccezione, per forza, le azioni che partono dal link cliente:
-approvare o chiedere una modifica scrive immediatamente, perché di là non
-c'è nessun pulsante Salva.
+Nello studio condiviso, quando due persone salvano lo stesso contenuto:
+
+- **campi diversi** (una la didascalia, l'altra la data) → si fondono da
+  soli, nessuno vede niente;
+- **lo stesso campo** → chi arriva secondo vede in basso chi l'ha cambiato e
+  cosa, e sceglie *Tieni la mia* o *Usa la loro versione*. Niente viene
+  sovrascritto in silenzio.
+
+Il dettaglio è in [`supabase/README.md`](supabase/README.md#salvataggio-e-conflitti).
 
 ---
 
@@ -246,40 +258,49 @@ cosa e quando" resta rispondibile a mesi di distanza.
 
 ```
 ideology-content/
-├── index.html          lo studio — carica i moduli in ordine
-├── cliente.html        il link cliente — carica solo il suo bundle
-├── build.mjs           inlining → dist/index.html
-├── make-demo.mjs       rigenera il documento di esempio
-├── smoke-client.mjs    41 test sul confine: cosa attraversa, cosa no,
-│                       cosa il cliente può e non può scrivere
-├── smoke.mjs          125 test su jsdom: dati, ordinamento per data,
-│                       approvazioni, viste, formati per piattaforma,
-│                       copertine reel, multi-piattaforma, stories,
-│                       salvataggio esplicito e annullamento, migrazioni,
-│                       cascate, tenuta del link cliente
-├── dist/
-│   └── index.html      build autonoma, un file solo
+├── index.html            lo studio — carica i moduli in ordine
+├── cliente.html          il link cliente — carica solo il suo bundle
+├── build.mjs             inlining + CSP con hash → dist/
+├── make-demo.mjs         rigenera il documento di esempio
+├── vercel.json           intestazioni di sicurezza (copiato in dist/)
+├── package.json          dipendenze di sviluppo e comandi
+├── smoke.mjs             138 test dello studio (jsdom)
+├── smoke-client.mjs       60 test del confine studio/cliente
+├── smoke-sync.mjs         91 test: due colleghi e un cliente sul database vero
+├── dist/                 le due pagine pronte, una per file
+├── supabase/
+│   ├── README.md         messa in produzione, sicurezza, Meta
+│   ├── config.toml       impostazioni per lo sviluppo locale
+│   ├── migrations/       lo schema, le regole di accesso, le funzioni
+│   ├── functions/        l'Edge Function `anteprima` (il link cliente)
+│   └── tests/             73 test su PostgreSQL 17 reale
 └── src/
     ├── css/
-    │   ├── tokens.css  colore, tipografia, geometria, tema scuro
-    │   └── app.css     layout e componenti
+    │   ├── tokens.css    colore, tipografia, geometria, tema scuro
+    │   ├── app.css       layout e componenti dello studio
+    │   └── client.css    la pagina cliente
+    ├── vendor/           supabase-js, copiato e verificato (vedi README)
+    ├── data/demo.js      documento di esempio per la pagina cliente
     └── js/
-        ├── 00-dates.js     vocabolario delle date (condiviso)
-        ├── 00-platforms.js catalogo piattaforme (condiviso)
-        ├── 01-core.js      id, helper DOM, icone, toast, modali
-        ├── 02-store.js     schema, selettori, mutazioni, persistenza
-        ├── 03-seed.js      studio demo + generatore immagini offline
-        ├── 04-grid.js      IL renderer condiviso + lightbox
-        ├── 05-feed.js      griglia e pannello di modifica
-        ├── 06-stories.js   stories, storyboard, evidenze
-        ├── 07-ugc.js       calendario, elenco, creator, anno
-        ├── 08-calendar.js  mese aggregato
-        ├── 09-preview.js   anteprima studio + vista cliente
-        ├── 11-home.js      cruscotto su tutti i clienti
-        ├── 12-clients.js   elenco e scheda cliente
-        ├── 20-app.js       rail, barra contesto, tab, routing, avvio
-        ├── 30-client-data.js  il contratto: read() e submit()
-        └── 31-client-app.js   la pagina che vede il cliente
+        ├── 00-config.js      dove stanno i dati: browser o Supabase
+        ├── 00-dates.js       vocabolario delle date (condiviso)
+        ├── 00-platforms.js   catalogo piattaforme (condiviso)
+        ├── 01-core.js        id, helper DOM, icone, toast, modali
+        ├── 02-store.js       schema, selettori, mutazioni, salvataggio
+        ├── 03-seed.js        studio demo + generatore immagini offline
+        ├── 04-grid.js        IL renderer condiviso + lightbox
+        ├── 05-feed.js        griglia e dialogo del contenuto
+        ├── 06-stories.js     stories, storyboard, evidenze
+        ├── 07-ugc.js         calendario, elenco, creator, anno
+        ├── 08-calendar.js    mese aggregato
+        ├── 09-preview.js     anteprima dello studio
+        ├── 11-home.js        cruscotto su tutti i clienti
+        ├── 12-clients.js     elenco e scheda cliente
+        ├── 15-sync.js        studio condiviso: diff, conflitti, dal vivo, media
+        ├── 16-session.js     accesso, scelta dello studio, team
+        ├── 20-app.js         rail, barra contesto, tab, routing, avvio
+        ├── 30-client-data.js il contratto: read/submit, load/send
+        └── 31-client-app.js  la pagina che vede il cliente
 ```
 
 I file JS sono numerati perché la build li concatena in quest'ordine. Nessun
@@ -291,18 +312,23 @@ gira.
 ## Comandi
 
 ```bash
-node build.mjs         # rigenera dist/index.html e dist/cliente.html
-node smoke.mjs         # test dello studio      (serve: npm install jsdom)
-node smoke-client.mjs  # test del link cliente
-node make-demo.mjs     # rigenera src/data/demo.js (dopo una build)
+npm ci                 # una volta: jsdom, PostgreSQL embedded, supabase-js
+npm run build          # rigenera dist/index.html e dist/cliente.html
+npm test               # studio + link cliente
+npm run test:db        # schema e sicurezza su PostgreSQL 17 vero
+npm run test:sync      # due colleghi e un cliente, end to end
+npm run test:all       # tutto: 362 test
+npm run demo           # rigenera src/data/demo.js e ricostruisce
 ```
+
+Serve Node 22.6 o successivo (i test dell'Edge Function leggono TypeScript).
 
 La build rifiuta di produrre `cliente.html` se quella pagina arriva a
 caricare un modulo dello studio: la separazione non è una convenzione, è
 verificata a ogni build.
 
 Per sviluppare apri `index.html` da un server locale (`python3 -m http.server`).
-Per consegnare, usa `dist/index.html`: funziona anche con doppio clic.
+Per consegnare, usa `dist/`: Vercel lo serve così com'è.
 
 ---
 
@@ -317,8 +343,11 @@ bianca. I contenuti demo non sono
 immagini: sono SVG generati in modo deterministico dall'id del post, così la
 griglia si legge come un feed vero senza scaricare nulla.
 
-Lo stato vive in `localStorage` sotto la chiave `ideology.content.v1`, e ci
-finisce **solo** quando si preme Salva.
+Da soli, lo stato vive in `localStorage` sotto la chiave
+`ideology.content.v1`. Nello studio condiviso vive nel database, e i file
+caricati vanno in Supabase Storage (privato, mai pubblico): nel database
+resta solo il percorso, e chi guarda riceve un link firmato che scade. Il
+database rifiuta le immagini incorporate, così una riga resta leggera.
 Il pulsante **Dati e backup** nella barra esporta e reimporta tutto, senza
 whitelist di campi: stati di approvazione, pilastri, formati, storico e note
 sopravvivono al giro completo.
@@ -327,10 +356,14 @@ sopravvivono al giro completo.
 
 ## Link cliente
 
-Il link cliente è **una pagina a sé**: `cliente.html?c=<token>`. Non è lo
+Il link cliente è **una pagina a sé**: `cliente.html#c=<token>`. Il token
+sta dopo il `#`, nel frammento: i browser non lo mandano mai a un server, quindi
+non finisce in nessun log e in nessun header Referer. I link nel formato
+vecchio `?c=` si aprono ancora, e il token viene spostato subito nel
+frammento. Non è lo
 studio con dei pezzi nascosti — è un'altra pagina, con un altro bundle. Chi
 apre il sorgente non trova l'editor, né il planner UGC, né l'anagrafica, né
-i dati degli altri clienti: non sono lì. 72 KB contro 280.
+i dati degli altri clienti: non sono lì. 142 KB contro 568 — e nessuna libreria Supabase: solo `fetch`.
 
 ```
 ┌─────────────────┐                      ┌──────────────────┐
@@ -348,10 +381,11 @@ i dati degli altri clienti: non sono lì. 72 KB contro 280.
                        └ indirizzato per id, mai per posizione
 ```
 
-`read()` e `submit()` sono scritte come se dall'altra parte ci fosse già un
-server, perché un giorno ci sarà: sono il corpo di `GET /api/anteprima?c=` e
-di `POST /api/anteprima`. Sostituire il documento locale con `fetch()` è una
-modifica a queste due funzioni e a nient'altro.
+`read()` e `submit()` lavorano sul documento del browser; `load()` e
+`send()` sono quello che la pagina usa davvero, e quando `00-config.js` nomina
+un progetto Supabase vanno all'Edge Function `anteprima`, che chiama
+`client_preview()` e `client_review()` in Postgres. Le regole sono le stesse
+nei due casi, e i test le verificano in entrambi.
 
 **Cosa non attraversa mai il confine:** gli altri clienti, le bozze, le note
 interne, lo storico delle approvazioni, i piani di pubblicazione multipla,
@@ -392,8 +426,8 @@ diverse) usa un documento di esempio incorporato, e lo dichiara con
 un'etichetta *Esempio* in testa. Serve a poterla aprire e guardare senza
 prima configurare nulla; `make-demo.mjs` lo rigenera quando il seed cambia.
 
-In questa versione il token è dimostrativo e i dati sono locali al browser.
-Per un uso reale servono un backend e un token non indovinabile; il modello
-dati è già nella forma giusta — ogni scrittura del cliente è indirizzata per
-`postId`, non per posizione, e la whitelist dei campi scrivibili è una riga
-sola da aggiungere lato server.
+Nello studio condiviso il token è un segreto da 192 bit generato dal
+browser con il generatore crittografico, il database rifiuta qualunque token
+più corto di 32 caratteri, e un link si può spegnere dalla scheda cliente.
+Lo *slug* del cliente non apre niente: è il nome in minuscolo, chiunque lo
+indovina.

@@ -10,14 +10,37 @@ window.IDE = window.IDE || {};
 (function (A) {
   'use strict';
 
-  var counter = 0;
-
-  A.uid = function (prefix) {
-    counter = (counter + 1) % 4096;
-    return (prefix || 'x') + '_' +
-      Date.now().toString(36) + '_' +
-      counter.toString(36) + Math.random().toString(36).slice(2, 7);
+  /* RFC 4122 v4 from the CSPRNG. Ids are made in the browser, so a
+     record can be referenced (a story pointing at its post) before
+     the server has seen either; the database stores them as uuid. */
+  A.uuid = function () {
+    var c = window.crypto;
+    if (c && typeof c.randomUUID === 'function') return c.randomUUID();
+    var b = new Uint8Array(16);
+    c.getRandomValues(b);
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    var h = Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
   };
+
+  /* A secret Supabase key in a page is a key anyone can read. Both
+     pages refuse to start with one rather than hand out full access. */
+  A.looksSecretKey = function (k) {
+    if (/^sb_secret_/i.test(k)) return true;
+    var parts = String(k || '').split('.');
+    if (parts.length === 3) {
+      try {
+        var p = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+        return !!p && p.role === 'service_role';
+      } catch (e) { return false; }
+    }
+    return false;
+  };
+
+  /* The prefix used to be part of the id. It is kept as an argument so
+     call sites still say what they are making. */
+  A.uid = function (prefix) { return A.uuid(); };
 
   /* ── DOM ──────────────────────────────────────────────── */
 
@@ -33,6 +56,7 @@ window.IDE = window.IDE || {};
         else if (k === 'style') n.style.cssText = v;
         else if (k === 'dataset') { for (var d in v) n.dataset[d] = v[d]; }
         else if (k.slice(0, 2) === 'on' && typeof v === 'function') n.addEventListener(k.slice(2), v);
+        else if ((k === 'src' || k === 'poster') && A.resolveMedia) n.setAttribute(k, A.resolveMedia(v, n, k));
         else n.setAttribute(k, v === true ? '' : v);
       }
     }
@@ -121,6 +145,9 @@ window.IDE = window.IDE || {};
 
   A.modal = function (cfg) {
     var bg = A.$('#modal-bg');
+    /* A dialog opened over another replaces it: the one being replaced
+       still gets its close handler, so nothing it was holding leaks. */
+    if (modalCloser) { var prev = modalCloser; modalCloser = null; prev(); }
     A.clear(bg);
     var box = A.el('div', { class: 'modal' + (cfg.wide ? ' wide' : ''), role: 'dialog', 'aria-modal': 'true' });
     var hd = A.el('div', { class: 'modal-hd' }, [
@@ -134,7 +161,7 @@ window.IDE = window.IDE || {};
       var ft = A.el('div', { class: 'modal-ft' });
       cfg.actions.forEach(function (a) {
         ft.appendChild(A.el('button', {
-          class: 'btn ' + (a.kind || ''), text: a.label,
+          class: 'btn ' + (a.kind || ''), text: a.label, title: a.title || null,
           onclick: function () {
             if (a.run) { if (a.run() === false) return; }
             if (a.keepOpen !== true) A.closeModal();

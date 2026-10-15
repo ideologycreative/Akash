@@ -115,7 +115,7 @@
     filters: { status: [], categoryId: [], paid: false, partner: false },
     show: { date: true, caption: true, tags: true },
     previewMode: 'studio',   // 'studio' | 'client'
-    saveState: 'saved'
+    saveState: 'saved'      // see setSaveState
   };
 
   /* ── Persistence ──────────────────────────────────────── */
@@ -137,25 +137,49 @@
   }
   A.serialize = serialize;
 
-  /* Explicit saving. Work in progress stays in memory until someone asks
-     for it to be kept, which means closing a dialog with Annulla, or
-     leaving the page, genuinely throws the change away instead of having
-     quietly persisted it two keystrokes earlier. */
+  /* Autosave. Every change is kept a moment after it is made: in the
+     browser's own storage when working alone, in the studio's database
+     when 00-config.js names one (15-sync.js). The pause batches a burst
+     of keystrokes into one write.
+
+     States: saved · pending (change made, save scheduled) · saving ·
+     offline (retrying) · conflict (a colleague changed the same field)
+     · error (the server refused something). */
   A.dirty = false;
+  A.AUTOSAVE_MS = 700;
 
   function setSaveState(s) {
     A.ui.saveState = s;
-    A.dirty = (s === 'dirty' || s === 'error');
+    A.dirty = s !== 'saved';
+    if (A.renderSaveState) A.renderSaveState();
   }
   A.setSaveState = setSaveState;
 
+  var saveTimer = null;
+  A.scheduleSave = function () {
+    clearTimeout(saveTimer);
+    if (A.ui.saveState !== 'saving' && A.ui.saveState !== 'conflict') setSaveState('pending');
+    saveTimer = setTimeout(function () { saveTimer = null; A.save({ quiet: true }); }, A.AUTOSAVE_MS);
+  };
+
+  /* Save now, skipping the pause (leaving the page, closing a dialog). */
+  A.saveNow = function () {
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    return A.save({ quiet: true });
+  };
+
   A.save = function (opts) {
+    if (A.remote && A.remote.on) {
+      return A.remote.flush().then(function () {
+        if (!opts || opts.quiet !== true) A.toast('Salvato');
+        return true;
+      });
+    }
     try {
       assertShape(S);
       localStorage.setItem(KEY, JSON.stringify(serialize()));
       setSaveState('saved');
       if (!opts || opts.quiet !== true) A.toast('Salvato');
-      A.render();
       return true;
     } catch (e) {
       setSaveState('error');
@@ -164,13 +188,25 @@
     }
   };
 
-  /* Throw away everything since the last save and go back to what is on
-     disk. If there is nothing on disk yet, that is the demo studio. */
-  A.revert = function () {
-    if (!A.load()) { A.seed(); }
-    A.ui.clientDetailId = A.get(A.ui.clientDetailId) ? A.ui.clientDetailId : null;
-    setSaveState('saved');
-    A.render();
+  /* Re-render soon, once, and not under someone's cursor: if a field in
+     the page is focused, wait until it is left. Used for changes that
+     arrive from colleagues. */
+  var renderTimer = null, renderAfterBlur = false;
+  A.scheduleRender = function () {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(function () {
+      var act = document.activeElement;
+      var typing = act && /^(INPUT|TEXTAREA|SELECT)$/.test(act.tagName) &&
+        !act.closest('#modal-bg') && act.closest('#root');
+      if (typing) {
+        if (!renderAfterBlur) {
+          renderAfterBlur = true;
+          act.addEventListener('blur', function () { renderAfterBlur = false; A.scheduleRender(); }, { once: true });
+        }
+        return;
+      }
+      A.render();
+    }, 60);
   };
 
   A.load = function () {
@@ -240,11 +276,11 @@
     index();
   };
 
-  /* Every mutation goes through commit(): it reindexes, marks the
-     document dirty, debounces the write, and re-renders. */
+  /* Every mutation goes through commit(): it reindexes, schedules the
+     save, and re-renders. */
   A.commit = function (opts) {
     index();
-    setSaveState('dirty');
+    A.scheduleSave();
     if (!opts || opts.render !== false) A.render();
   };
 
@@ -495,6 +531,7 @@
     if (status === 'in_revisione') p.revisions = (p.revisions || 0) + 1;
     if (!p.history) p.history = [];
     p.history.push({
+      id: A.uuid(),
       at: new Date().toISOString(),
       from: from, to: status,
       by: actor || 'studio',
@@ -648,6 +685,12 @@
      left pointing at a record that no longer exists.
   ──────────────────────────────────────────────────────── */
 
+  /* A file that lives with the studio (uploaded) rather than a link to
+     somewhere else: a storage path, or inline data in browser-only mode. */
+  A.isStoredMedia = function (ref) {
+    return typeof ref === 'string' && ref !== '' && (/^data:/.test(ref) || !/^[a-z][a-z0-9+.-]*:/i.test(ref));
+  };
+
   A.slugify = function (name) {
     return String(name || '').toLowerCase()
       .replace(/[àáâãä]/g, 'a').replace(/[èéêë]/g, 'e').replace(/[ìíîï]/g, 'i')
@@ -663,16 +706,17 @@
        <a href="cliente.html"> would be — string surgery on the path
        guesses wrong as soon as the host serves the page from a URL
        that does not end in a file name. */
-    return new URL('cliente.html?c=' + encodeURIComponent(cl.shareToken), document.baseURI).href;
+    /* The token goes in the fragment: never sent to a server, so it
+       never lands in an access log or a Referer header. */
+    return new URL('cliente.html#c=' + encodeURIComponent(cl.shareToken), document.baseURI).href;
   };
 
+  /* 192 bits from the browser's CSPRNG: a share link is a bearer
+     secret, and the database refuses anything shorter than 32 chars. */
   A.newToken = function () {
-    if (window.crypto && window.crypto.getRandomValues) {
-      var b = new Uint8Array(8);
-      window.crypto.getRandomValues(b);
-      return Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
-    }
-    return (Date.now().toString(36) + Math.random().toString(36).slice(2, 10)).slice(0, 16);
+    var b = new Uint8Array(24);
+    window.crypto.getRandomValues(b);
+    return Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
   };
 
   A.MARK_COLORS = ['#9A5B3C', '#4F5E4A', '#3F4F6B', '#6E4C57', '#7A6420', '#3D5B58'];
@@ -839,6 +883,7 @@
 
   A.importAll = function (text) {
     var data = migrate(JSON.parse(text));
+    if (A.remote && A.remote.on) throw new Error('Nello studio condiviso il ripristino da file va fatto da un proprietario, non da qui');
     assertShape(data);
     A.hydrate(data);
     var c = S.clients[0];
@@ -849,6 +894,7 @@
   };
 
   A.resetAll = function () {
+    if (A.remote && A.remote.on) { A.toast('Non disponibile nello studio condiviso'); return; }
     try { localStorage.removeItem(KEY); } catch (e) {}
     A.seed();
     A.save({ quiet: true });

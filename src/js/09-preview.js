@@ -61,7 +61,7 @@
       ok: 'Invia',
       run: function () {
         drafts.forEach(function (p) { A.setStatus(p.id, 'da_approvare', 'studio', ''); });
-        A.save({ quiet: true });
+        A.saveNow();
         A.toast(drafts.length + ' contenuti inviati');
       }
     });
@@ -74,6 +74,15 @@
     var g = A.el('input', { class: 'inp', type: 'number', value: acc.following || 0 });
     var bio = A.el('textarea', { class: 'ta', rows: '4' });
     bio.value = acc.bio || '';
+    var held = { snap: A.snap(acc) };
+    var stopSnap = A.followSnapshot ? A.followSnapshot(acc.id, held) : function () {};
+    function bind(input, write) {
+      input.addEventListener('input', function () { write(); A.commit({ render: false }); });
+    }
+    bind(h, function () { acc.handle = h.value.trim(); });
+    bind(f, function () { acc.followers = Number(f.value) || 0; });
+    bind(g, function () { acc.following = Number(g.value) || 0; });
+    bind(bio, function () { acc.bio = bio.value; });
     var prev = A.el('div', {
       style: 'width:54px;height:54px;border-radius:50%;overflow:hidden;background:var(--paper-2);border:1px solid var(--rule);' +
              'display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ink-3);'
@@ -103,18 +112,13 @@
         ]),
         A.el('div', { class: 'field' }, [A.el('label', { text: 'Bio' }), bio])
       ],
+      onClose: function () { stopSnap(); A.render(); A.saveNow(); },
       actions: [
-        { label: 'Annulla' },
         {
-          label: 'Salva', kind: 'primary', run: function () {
-            acc.handle = h.value.trim();
-            acc.followers = Number(f.value) || 0;
-            acc.following = Number(g.value) || 0;
-            acc.bio = bio.value;
-            A.commit();
-            A.save({ quiet: true });
-          }
-        }
+          label: 'Annulla modifiche',
+          run: function () { A.restore(acc, held.snap); A.commit(); A.saveNow(); }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   }

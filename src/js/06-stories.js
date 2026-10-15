@@ -63,8 +63,10 @@
   }
 
   function editHighlight(h, isNew) {
-    var hSnap = A.snap(h), hWasDirty = A.dirty, hSaved = false, hNew = !!isNew;
+    var held = { snap: A.snap(h) }, hNew = !!isNew;
+    var stopSnap = A.followSnapshot ? A.followSnapshot(h.id, held) : function () {};
     var name = A.el('input', { class: 'inp', value: h.title });
+    name.addEventListener('input', function () { h.title = name.value; A.commit({ render: false }); });
     var prev = A.el('div', {
       style: 'width:64px;height:64px;border-radius:50%;overflow:hidden;border:1px solid var(--rule);' +
              'background:var(--paper-2);display:flex;align-items:center;justify-content:center;color:var(--ink-4);'
@@ -87,17 +89,28 @@
           ])
         ])
       ],
-      onClose: function () { if (!hSaved) { A.restore(h, hSnap); if (hNew) A.S.highlights = A.S.highlights.filter(function (x) { return x.id !== h.id; }); A.index(); A.setSaveState(hWasDirty ? 'dirty' : 'saved'); A.render(); } },
+      onClose: function () {
+        stopSnap();
+        if (A.get(h.id) && !String(h.title || '').trim()) { h.title = 'Evidenza'; A.commit(); }
+        A.render();
+        A.saveNow();
+      },
       actions: [
         {
           label: 'Elimina', kind: 'danger', run: function () {
-            hSaved = true;
             A.S.highlights = A.S.highlights.filter(function (x) { return x.id !== h.id; });
-            A.commit(); A.save({ quiet: true });
+            A.commit(); A.saveNow();
           }
         },
-        { label: 'Annulla' },
-        { label: 'Salva', kind: 'primary', run: function () { hSaved = true; h.title = name.value.trim() || 'Evidenza'; A.commit(); A.save({ quiet: true }); } }
+        {
+          label: hNew ? 'Annulla' : 'Annulla modifiche',
+          run: function () {
+            if (hNew) A.S.highlights = A.S.highlights.filter(function (x) { return x.id !== h.id; });
+            else A.restore(h, held.snap);
+            A.commit(); A.saveNow();
+          }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   }
@@ -154,9 +167,8 @@
   A.openStoryEditor = function (storyId, opts) {
     opts = opts || {};
     var body = A.el('div', { style: 'display:flex;flex-direction:column;gap:15px;' });
-    var snapshot = A.snap(A.get(storyId));
-    var wasDirty = A.dirty;
-    var closedBySave = false;
+    var held = { snap: A.snap(A.get(storyId)) };
+    var stopSnap = A.followSnapshot ? A.followSnapshot(storyId, held) : function () {};
 
     function field(label, control, hint) {
       var f = A.el('div', { class: 'field' }, [A.el('label', { text: label }), control]);
@@ -261,30 +273,33 @@
       var live = A.get(storyId);
       if (!live) return;
       if (opts.isNew) A.S.stories = A.S.stories.filter(function (x) { return x.id !== storyId; });
-      else A.restore(live, snapshot);
-      A.index();
-      A.setSaveState(wasDirty ? 'dirty' : 'saved');
-      A.render();
+      else A.restore(live, held.snap);
+      A.commit();
+      A.saveNow();
     }
 
     A.modal({
       title: (A.get(storyId) || {}).kind === 'storyboard' ? 'Storyboard' : 'Story',
       wide: true,
       body: [body],
-      onClose: function () { if (!closedBySave) cancel(); },
+      onClose: function () { stopSnap(); A.saveNow(); },
       actions: [
         {
           label: 'Elimina', kind: 'danger', keepOpen: true, run: function () {
             A.confirm({
-              title: 'Eliminare?', body: 'L\'eliminazione viene scritta subito.',
+              title: 'Eliminare?', body: 'Viene eliminata per tutto lo studio. Puoi annullare dal messaggio in basso.',
               ok: 'Elimina', danger: true,
-              run: function () { closedBySave = true; A.closeModal(); A.deleteStory(storyId); A.save({ quiet: true }); }
+              run: function () { A.closeModal(); A.deleteStory(storyId); A.saveNow(); }
             });
             return false;
           }
         },
-        { label: 'Annulla' },
-        { label: 'Salva', kind: 'primary', run: function () { closedBySave = true; A.save({ quiet: true }); A.toast('Story salvata'); } }
+        {
+          label: opts.isNew ? 'Annulla' : 'Annulla modifiche',
+          title: opts.isNew ? 'Elimina questa story appena creata' : 'Riporta la story com\'era quando l\'hai aperta',
+          run: function () { cancel(); }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   };

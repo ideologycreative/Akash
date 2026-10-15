@@ -21,7 +21,12 @@
       var f = file.files && file.files[0];
       if (!f) return;
       var read = opts.read || A.readImage;
-      read(f).then(onSet).catch(function (e) { A.toast(e.message); });
+      var busy = A.remote && A.remote.on;
+      if (busy) A.toast('Caricamento…');
+      read(f)
+        .then(function (res) { return A.storeMedia ? A.storeMedia(res, f) : res; })
+        .then(function (res) { onSet(res); if (busy) A.toast('Caricato'); })
+        .catch(function (e) { A.toast(e.message); });
       file.value = '';
     });
     row.appendChild(A.el('button', {
@@ -81,10 +86,10 @@
       actions: [
         { label: 'Annulla' },
         {
-          label: 'Applica e salva', kind: 'primary',
+          label: 'Applica', kind: 'primary',
           run: function () {
             A.setStatus(post.id, chosen, actor || 'studio', noteBox.value.trim());
-            A.save({ quiet: true });
+            A.saveNow();
           }
         }
       ]
@@ -120,11 +125,16 @@
     if (!post) return;
     var client = A.clientOfAccount(post.accountId);
     /* The dialog writes straight through, so the grid behind it updates as
-       you type, and keeps a snapshot so Annulla can put everything back —
-       including a post that was created only to be cancelled. */
-    var snapshot = A.snap(post);
-    var wasDirty = A.dirty;
-    var closedBySave = false;
+       you type and every change is autosaved. It keeps a snapshot so
+       "Annulla modifiche" can put everything back — including removing a
+       post that was created only to be cancelled. */
+    var held = { snap: A.snap(post) };
+    var stopSnap = A.followSnapshot ? A.followSnapshot(postId, held) : function () {};
+    /* A colleague's change to this post shows up in the open dialog. */
+    var stopLive = A.remote && A.remote.onRemote ? A.remote.onRemote(function (table, id) {
+      if (!document.body.contains(body)) { stopLive(); return; }
+      if (id === postId && A.get(postId)) redraw();
+    }) : function () {};
     var body = A.el('div', { style: 'display:flex;flex-direction:column;gap:16px;' });
 
     function redraw() { A.rebuild(build); }
@@ -230,11 +240,11 @@
           'È questa che si vede nella griglia e nell\'anteprima.'));
 
         var vidWrap = A.el('div', { style: 'display:flex;flex-direction:column;gap:7px;' });
-        if (post.videoName || (post.mediaUrl || '').indexOf('data:video') === 0) {
+        if (post.videoName || A.isStoredMedia(post.mediaUrl)) {
           vidWrap.appendChild(A.el('div', { class: 'filechip' }, [
             (function () { var i = A.el('span'); i.innerHTML = A.icon('play', 11); return i; })(),
             A.el('span', { style: 'flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;', text: post.videoName || 'Video caricato' }),
-            A.el('span', { style: 'color:var(--ink-3);font-weight:600;', text: (post.mediaUrl || '').indexOf('data:video') === 0 ? 'nel documento' : 'solo riferimento' })
+            A.el('span', { style: 'color:var(--ink-3);font-weight:600;', text: A.isStoredMedia(post.mediaUrl) ? 'caricato' : 'solo riferimento' })
           ]));
         }
         vidWrap.appendChild(A.mediaControl(post.mediaUrl, function (res) {
@@ -254,8 +264,9 @@
           uploadLabel: 'Carica video', replaceLabel: 'Sostituisci video',
           linkPlaceholder: 'oppure incolla un link al video (Frame.io, Drive, WeTransfer…)'
         }));
-        body.appendChild(field('Video', vidWrap,
-          'Dal file carico anche un fotogramma come copertina. I video sopra ' + A.humanSize(A.VIDEO_INLINE_MAX) + ' restano un riferimento: in griglia conta la copertina.'));
+        body.appendChild(field('Video', vidWrap, A.remote && A.remote.on
+          ? 'Dal file carico anche un fotogramma come copertina. Il video va nello spazio dello studio (fino a ' + A.humanSize(A.remote.MAX_UPLOAD) + '); oltre, incolla un link.'
+          : 'Dal file carico anche un fotogramma come copertina. I video sopra ' + A.humanSize(A.VIDEO_INLINE_MAX) + ' restano un riferimento: in griglia conta la copertina.'));
       } else {
         body.appendChild(field('Immagine',
           A.mediaControl(post.mediaUrl, function (u) {
@@ -414,41 +425,43 @@
         var mirror = A.mirrorOf(postId);
         if (mirror) A.S.stories = A.S.stories.filter(function (x) { return x.id !== mirror.id; });
       } else {
-        A.restore(live, snapshot);
+        A.restore(live, held.snap);
         A.syncMirror(postId);
       }
-      A.index();
-      A.setSaveState(wasDirty ? 'dirty' : 'saved');
-      A.render();
+      A.commit();
+      A.saveNow();
     }
 
     A.modal({
       title: opts.isNew ? 'Nuovo contenuto' : 'Contenuto',
       wide: true,
       body: [body],
-      onClose: function () { if (!closedBySave) cancel(); },
+      onClose: function () {
+        stopLive();
+        stopSnap();
+        var live = A.get(postId);
+        if (live) delete live._partnerOpen;
+        A.saveNow();
+      },
       actions: [
         {
           label: 'Elimina', kind: 'danger', keepOpen: true, run: function () {
             A.confirm({
               title: 'Eliminare il contenuto?',
-              body: 'L\'eliminazione viene scritta subito. Puoi annullarla dal messaggio in basso.',
+              body: 'Viene eliminato per tutto lo studio. Puoi annullare dal messaggio in basso.',
               ok: 'Elimina', danger: true,
-              run: function () { closedBySave = true; A.closeModal(); A.deletePost(postId); A.save({ quiet: true }); }
+              run: function () { A.closeModal(); A.deletePost(postId); A.saveNow(); }
             });
             return false;
           }
         },
         { label: 'Anteprima', keepOpen: true, run: function () { A.openPostView(A.visiblePosts(), postId); } },
-        { label: 'Annulla', run: function () { closedBySave = false; } },
         {
-          label: 'Salva', kind: 'primary', run: function () {
-            closedBySave = true;
-            delete A.get(postId)._partnerOpen;
-            A.save({ quiet: true });
-            A.toast(opts.isNew ? 'Contenuto creato' : 'Contenuto salvato');
-          }
-        }
+          label: opts.isNew ? 'Annulla' : 'Annulla modifiche',
+          title: opts.isNew ? 'Elimina questo contenuto appena creato' : 'Riporta il contenuto com\'era quando l\'hai aperto',
+          run: function () { cancel(); }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   };
