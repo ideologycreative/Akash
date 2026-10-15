@@ -13,6 +13,7 @@
     { key: 'creator',  label: 'Creator' },
     { key: 'template', label: 'Template' }
   ];
+  A.UGC_MODES = MODES;    // the database checks the same list
   function modeLabel(k) {
     for (var i = 0; i < MODES.length; i++) if (MODES[i].key === k) return MODES[i].label;
     return k;
@@ -224,7 +225,8 @@
   }
 
   function editCreator(c, isNew) {
-    var cSnap = A.snap(c), cWasDirty = A.dirty, cSaved = false;
+    var held = { snap: A.snap(c) };
+    var stopSnap = A.followSnapshot ? A.followSnapshot(c.id, held) : function () {};
     var name = A.el('input', { class: 'inp', value: c.name });
     var handle = A.el('input', { class: 'inp', value: c.handle, placeholder: '@handle' });
     var fol = A.el('input', { class: 'inp', type: 'number', value: c.followers || 0 });
@@ -235,6 +237,18 @@
     });
     var note = A.el('textarea', { class: 'ta', rows: '3' });
     note.value = c.note || '';
+
+    /* every field is written as it changes, and autosaved */
+    function bind(input, evt, write) {
+      input.addEventListener(evt, function () { write(); A.commit({ render: false }); });
+    }
+    bind(name, 'input', function () { c.name = name.value; });
+    bind(handle, 'input', function () { c.handle = handle.value.trim(); });
+    bind(fol, 'input', function () { c.followers = Number(fol.value) || 0; });
+    bind(fee, 'input', function () { c.fee = Number(fee.value) || 0; });
+    bind(stat, 'change', function () { c.status = stat.value; });
+    bind(note, 'input', function () { c.note = note.value; });
+
     A.modal({
       title: 'Creator',
       body: [
@@ -250,28 +264,22 @@
         A.el('div', { class: 'field' }, [A.el('label', { text: 'Note' }), note])
       ],
       onClose: function () {
-        if (cSaved) return;
-        if (isNew) A.deleteCreator(c.id);
-        else { A.restore(c, cSnap); A.index(); }
-        A.setSaveState(cWasDirty ? 'dirty' : 'saved');
+        stopSnap();
+        if (A.get(c.id) && !String(c.name || '').trim()) { c.name = 'Senza nome'; A.commit({ render: false }); }
         A.render();
+        A.saveNow();
       },
       actions: [
-        { label: 'Elimina', kind: 'danger', run: function () { cSaved = true; A.deleteCreator(c.id); A.save({ quiet: true }); } },
-        { label: 'Annulla' },
+        { label: 'Elimina', kind: 'danger', run: function () { A.deleteCreator(c.id); A.saveNow(); } },
         {
-          label: 'Salva', kind: 'primary', run: function () {
-            cSaved = true;
-            c.name = name.value.trim() || 'Senza nome';
-            c.handle = handle.value.trim();
-            c.followers = Number(fol.value) || 0;
-            c.fee = Number(fee.value) || 0;
-            c.status = stat.value;
-            c.note = note.value;
-            A.commit();
-            A.save({ quiet: true });
+          label: isNew ? 'Annulla' : 'Annulla modifiche',
+          run: function () {
+            if (isNew) A.deleteCreator(c.id);
+            else { A.restore(c, held.snap); A.commit(); }
+            A.saveNow();
           }
-        }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   }
@@ -321,9 +329,8 @@
   A.openSlotEditor = function (slotId, opts) {
     opts = opts || {};
     var body = A.el('div', { style: 'display:flex;flex-direction:column;gap:15px;' });
-    var snapshot = A.snap(A.get(slotId));
-    var wasDirty = A.dirty;
-    var closedBySave = false;
+    var held = { snap: A.snap(A.get(slotId)) };
+    var stopSnap = A.followSnapshot ? A.followSnapshot(slotId, held) : function () {};
 
     function field(label, control) {
       return A.el('div', { class: 'field' }, [A.el('label', { text: label }), control]);
@@ -392,29 +399,31 @@
       var live = A.get(slotId);
       if (!live) return;
       if (opts.isNew) A.S.ugcSlots = A.S.ugcSlots.filter(function (x) { return x.id !== slotId; });
-      else A.restore(live, snapshot);
-      A.index();
-      A.setSaveState(wasDirty ? 'dirty' : 'saved');
-      A.render();
+      else A.restore(live, held.snap);
+      A.commit();
+      A.saveNow();
     }
 
     A.modal({
       title: 'Slot UGC · ' + (slot ? A.dayLabel(slot.date) : ''),
       body: [body],
-      onClose: function () { if (!closedBySave) cancel(); },
+      onClose: function () { stopSnap(); A.saveNow(); },
       actions: [
         {
           label: 'Elimina', kind: 'danger', keepOpen: true, run: function () {
             A.confirm({
-              title: 'Eliminare lo slot?', body: 'L\'eliminazione viene scritta subito.',
+              title: 'Eliminare lo slot?', body: 'Viene eliminato per tutto lo studio. Puoi annullare dal messaggio in basso.',
               ok: 'Elimina', danger: true,
-              run: function () { closedBySave = true; A.closeModal(); A.deleteUgcSlot(slotId); A.save({ quiet: true }); }
+              run: function () { A.closeModal(); A.deleteUgcSlot(slotId); A.saveNow(); }
             });
             return false;
           }
         },
-        { label: 'Annulla' },
-        { label: 'Salva', kind: 'primary', run: function () { closedBySave = true; A.save({ quiet: true }); A.toast('Slot salvato'); } }
+        {
+          label: opts.isNew ? 'Annulla' : 'Annulla modifiche',
+          run: function () { cancel(); }
+        },
+        { label: 'Fatto', kind: 'primary', run: function () {} }
       ]
     });
   };

@@ -368,31 +368,41 @@ const prog = A.progressOf(cl1.accounts[0].id, A.ui.month, cl1.id);
 ok('progresso calcolato su 4 voci', prog.length === 4);
 ok('conteggio reel separato dai post', prog.find(x=>x.key==='reel').done >= 0);
 
-console.log('\n— salvataggio esplicito —');
+console.log('\n— salvataggio automatico —');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const onDisk = (id) => JSON.parse(window.localStorage.getItem('ideology.content.v1')).posts.find(p => p.id === id);
 A.resetAll();
-ok('dopo il reset è pulito', A.dirty === false);
+ok('dopo il reset è tutto salvato', A.dirty === false && A.ui.saveState === 'saved');
 const probe = A.curPosts()[0];
 const originalCaption = probe.caption;
-A.updatePost(probe.id, { caption: 'modifica non salvata' });
-ok('una modifica sporca il documento', A.dirty === true);
-ok('niente è finito su disco', JSON.parse(window.localStorage.getItem('ideology.content.v1'))
-   .posts.find(p => p.id === probe.id).caption === originalCaption);
-A.save({ quiet: true });
-ok('Salva scrive su disco', A.dirty === false &&
-   JSON.parse(window.localStorage.getItem('ideology.content.v1'))
-     .posts.find(p => p.id === probe.id).caption === 'modifica non salvata');
-A.updatePost(probe.id, { caption: 'seconda modifica' });
-A.revert();
-ok('Annulla riporta all\'ultimo salvataggio',
-   A.get(probe.id).caption === 'modifica non salvata' && A.dirty === false);
-ok('il controllo Salva compare solo quando serve', (() => {
-  A.render();
-  const clean = !window.document.querySelector('.rail-save');
-  A.updatePost(probe.id, { caption: 'x' });
-  const dirty = !!window.document.querySelector('.rail-save');
-  A.revert();
-  return clean && dirty;
+let writes = 0;
+const realSet = window.Storage.prototype.setItem;
+window.Storage.prototype.setItem = function (k, v) { if (k === 'ideology.content.v1') writes++; return realSet.call(this, k, v); };
+for (let i = 1; i <= 5; i++) A.updatePost(probe.id, { caption: 'raffica ' + i }, { render: false });
+ok('una modifica mette il salvataggio in coda', A.dirty === true && A.ui.saveState === 'pending');
+ok('durante la raffica non si scrive niente', writes === 0 && onDisk(probe.id).caption === originalCaption);
+await sleep(A.AUTOSAVE_MS + 150);
+ok('dopo una pausa si salva da solo', onDisk(probe.id).caption === 'raffica 5' && A.dirty === false);
+ok('cinque modifiche, una sola scrittura', writes === 1, writes);
+window.Storage.prototype.setItem = realSet;
+ok('non c\'è più un pulsante Salva', (A.render(), !window.document.querySelector('.rail-save')));
+ok('l\'indicatore dice lo stato', (() => {
+  const n = window.document.getElementById('save-state');
+  const saved = n && n.getAttribute('data-s') === 'saved';
+  A.updatePost(probe.id, { caption: 'indicatore' }, { render: false });
+  const pending = window.document.getElementById('save-state').getAttribute('data-s') === 'pending';
+  return saved && pending;
 })());
+window.dispatchEvent(new window.Event('beforeunload'));
+ok('chiudendo la pagina l\'ultima modifica è già scritta', onDisk(probe.id).caption === 'indicatore' && !A.dirty);
+ok('gli id sono UUID', /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(A.uid('post')));
+ok('il link cliente ha un token da 192 bit', /^[0-9a-f]{48}$/.test(A.newToken()));
+ok('la cronologia ha un id per ogni passaggio', (() => {
+  A.setStatus(probe.id, 'da_approvare', 'studio', '');
+  const h = A.get(probe.id).history;
+  return /^[0-9a-f-]{36}$/.test(h[h.length - 1].id);
+})());
+A.saveNow();
 
 console.log('— il dialogo non torna in cima —');
 (() => {
@@ -412,29 +422,58 @@ console.log('— il dialogo non torna in cima —');
   A.closeModal();
 })();
 
-console.log('\n— annulla in un dialogo —');
+console.log('\n— dialoghi con salvataggio automatico —');
 A.resetAll();
+const btn = (label) => [...window.document.querySelectorAll('.modal-ft .btn')].find(b => b.textContent === label);
 const edited = A.curPosts()[1];
 const before3 = JSON.stringify(edited);
 A.openPostEditor(edited.id);
+ok('i comandi sono Elimina · Anteprima · Annulla modifiche · Fatto',
+   ['Elimina', 'Anteprima', 'Annulla modifiche', 'Fatto'].every(l => !!btn(l)));
 A.updatePost(edited.id, { caption: 'cambiata nel dialogo', paid: true });
 ok('il dialogo scrive in diretta', A.get(edited.id).caption === 'cambiata nel dialogo');
 A.closeModal();
-ok('Annulla ripristina il contenuto', JSON.stringify(A.get(edited.id)) === before3);
-ok('e non lascia il documento sporco', A.dirty === false);
+ok('chiudere il dialogo tiene la modifica', A.get(edited.id).caption === 'cambiata nel dialogo');
+ok('e la salva subito', onDisk(edited.id).caption === 'cambiata nel dialogo' && !A.dirty);
+
+A.openPostEditor(edited.id);
+const opened = JSON.stringify(A.get(edited.id));
+A.updatePost(edited.id, { caption: 'da buttare', paid: false });
+btn('Annulla modifiche').click();
+ok('Annulla modifiche riporta com\'era all\'apertura', JSON.stringify(A.get(edited.id)) === opened);
+ok('e salva il ripristino', onDisk(edited.id).caption === 'cambiata nel dialogo' && !A.dirty);
+ok('il dialogo si chiude', !window.document.querySelector('#modal-bg.on'));
+
 const countBefore = A.S.posts.length;
 const fresh = A.addPost('foto');
 A.openPostEditor(fresh.id, { isNew: true });
-A.closeModal();
+ok('un contenuto nuovo offre Annulla', !!btn('Annulla'));
+btn('Annulla').click();
 ok('annullare un contenuto nuovo lo rimuove', A.S.posts.length === countBefore && !A.get(fresh.id));
+ok('anche dal disco', !JSON.parse(window.localStorage.getItem('ideology.content.v1')).posts.some(p => p.id === fresh.id));
+
+const fresh2 = A.addPost('foto');
+A.openPostEditor(fresh2.id, { isNew: true });
+A.closeModal();
+ok('chiudere un contenuto nuovo lo tiene', !!A.get(fresh2.id));
+A.deletePost(fresh2.id);
+
+ok('aprire un dialogo sopra un altro chiude bene il primo', (() => {
+  let closed = 0;
+  A.modal({ title: 'uno', body: [], onClose: () => { closed++; } });
+  A.modal({ title: 'due', body: [] });
+  A.closeModal();
+  return closed === 1;
+})());
 
 console.log('\n— link cliente —');
 const token = A.S.clients[0].shareToken;
-ok('token presente', !!token && token.length >= 8, token);
+ok('token presente', !!token && token.length >= 32, token);
 ok('il link cliente punta a una pagina separata', (() => {
   const url = A.clientUrl(A.S.clients[0]);
-  return /cliente\.html\?c=/.test(url) && url.indexOf(token) > 0;
+  return /cliente\.html#c=/.test(url) && url.indexOf(token) > 0;
 })(), A.clientUrl(A.S.clients[0]));
+ok('il token sta nel frammento, che non arriva mai a un server', new URL(A.clientUrl(A.S.clients[0])).search === '');
 ok('lo studio non ha più una modalità cliente interna',
    A.ui.lockedToClient === undefined && !('askRevision' in A));
 

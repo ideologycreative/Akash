@@ -171,7 +171,8 @@
     s.appendChild(field('Note', note));
 
     var url = A.clientUrl(cl);
-    s.appendChild(field('Link di approvazione', A.el('div', { class: 'linkbox' }, [
+    var off = cl.shareEnabled === false;
+    s.appendChild(field('Link di approvazione', A.el('div', { class: 'linkbox' + (off ? ' off' : '') }, [
       A.el('code', { text: url }),
       A.el('button', {
         class: 'btn ghost sm', text: 'Copia',
@@ -187,8 +188,18 @@
             run: function () { A.updateClient(cl.id, { shareToken: A.newToken() }); A.toast('Nuovo link generato'); }
           });
         }
+      }),
+      A.el('button', {
+        class: 'btn ghost sm', text: off ? 'Riattiva' : 'Disattiva',
+        title: off ? 'Il link torna a funzionare' : 'Il link smette di funzionare finché non lo riattivi',
+        onclick: function () {
+          A.updateClient(cl.id, { shareEnabled: off });
+          A.toast(off ? 'Link riattivato' : 'Link disattivato: il cliente vede "link non valido"');
+        }
       })
-    ]), 'Apre solo l\'anteprima di questo cliente, in sola lettura. Le bozze non sono mai incluse.'));
+    ]), off
+      ? 'Disattivato: chi lo apre vede "link non valido". Riattivalo quando serve.'
+      : 'Apre solo l\'anteprima di questo cliente, in sola lettura. Le bozze non sono mai incluse.'));
     return s;
   }
 

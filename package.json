@@ -1,0 +1,24 @@
+{
+  "name": "ideology-content",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Ideology — piano editoriale e anteprima cliente. ideology.it",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "demo": "node make-demo.mjs && node build.mjs",
+    "test": "node build.mjs && node smoke.mjs && node smoke-client.mjs",
+    "test:db": "node --experimental-strip-types --no-warnings supabase/tests/db.test.mjs",
+    "test:sync": "node build.mjs && node --experimental-strip-types --no-warnings smoke-sync.mjs",
+    "test:all": "npm test && npm run test:db && npm run test:sync"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "embedded-postgres": "17.10.0-beta.17",
+    "jsdom": "29.1.1",
+    "pg": "8.23.1"
+  },
+  "engines": {
+    "node": ">=22.6"
+  }
+}

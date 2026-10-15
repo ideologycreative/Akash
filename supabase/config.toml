@@ -1,0 +1,46 @@
+# Local development settings for `supabase start` (Supabase CLI).
+# Production settings live in the dashboard — see supabase/README.md,
+# "Dashboard settings". Keep the two in step.
+
+project_id = "ideology-content"
+
+[api]
+enabled = true
+port = 54321
+# Only public is reachable over HTTP. Helpers live in `private`,
+# which is deliberately not listed.
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+# The studio loads in pages of 1000 (see 15-sync.js), so this cap is
+# safe to keep at the default.
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[realtime]
+enabled = true
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5500"
+additional_redirect_urls = ["http://localhost:5500"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+# Studio logins are created by an owner, not by strangers signing up.
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = true
+double_confirm_changes = true
+
+# The client link has no login: its share token is the credential and
+# the database checks it. JWT verification would only reject clients.
+[functions.anteprima]
+verify_jwt = false

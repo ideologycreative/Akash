@@ -1,3 +1,11 @@
 node_modules/
-package-lock.json
 .DS_Store
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
+
+# Never commit credentials
+.env
+.env.*
+*.pem

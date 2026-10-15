@@ -48,8 +48,8 @@
     return c;
   }
 
-  function reload() {
-    S.data = C.read(S.token);
+  async function reload() {
+    S.data = await C.load(S.token);
     if (!S.data) return false;
     if (!S.token && S.data.token) S.token = S.data.token;
     if (!S.accountId || !S.data.client.accounts.some(function (a) { return a.id === S.accountId; })) {
@@ -168,14 +168,21 @@
     return row;
   }
 
-  function act(p, action, note, onDone) {
-    var res = C.submit(S.token, p.id, action, note);
-    if (!res.ok) { A.toast(res.error); return; }
-    A.toast(action === 'approva' ? 'Approvato' :
-            action === 'revisione' ? 'Richiesta inviata allo studio' : 'Approvazione annullata');
-    reload();
-    if (onDone) onDone();
-    render();
+  var sending = false;
+  async function act(p, action, note, onDone) {
+    if (sending) return;
+    sending = true;
+    try {
+      var res = await C.send(S.token, p.id, action, note);
+      if (!res.ok) { A.toast(res.error); return; }
+      A.toast(action === 'approva' ? 'Approvato' :
+              action === 'revisione' ? 'Richiesta inviata allo studio' : 'Approvazione annullata');
+      try { await reload(); } catch (e) { A.toast('Salvato. Aggiorna la pagina per vedere lo stato.'); }
+      if (onDone) onDone();
+      render();
+    } finally {
+      sending = false;
+    }
   }
 
   function askChange(p, onDone) {
@@ -479,6 +486,23 @@
     var root = A.$('#cl-root');
     A.clear(root);
 
+    if (S.loading || S.failed) {
+      root.appendChild(A.el('div', { class: 'cl-gate' }, S.failed ? [
+        A.el('h1', { text: 'Non riesco a caricare l\'anteprima' }),
+        A.el('p', { text: S.failed }),
+        A.el('button', { class: 'cl-btn primary', text: 'Riprova', onclick: C.boot })
+      ] : [A.el('p', { text: 'Caricamento…' })]));
+      return;
+    }
+
+    if (C.misconfigured) {
+      root.appendChild(A.el('div', { class: 'cl-gate' }, [
+        A.el('h1', { text: 'Pagina da configurare' }),
+        A.el('p', { text: 'La chiave in 00-config.js è una chiave segreta: va usata quella pubblica.' })
+      ]));
+      return;
+    }
+
     if (!S.data) {
       root.appendChild(A.el('div', { class: 'cl-gate' }, [
         A.el('h1', { text: 'Link non valido' }),
@@ -518,12 +542,27 @@
     if (bg && bg.classList.contains('on') && e.key === 'Escape') A.closeModal();
   });
 
-  C.boot = function () {
+  C.boot = async function () {
     S.token = C.tokenFromUrl();
-    reload();
+    S.loading = true; S.failed = '';
+    render();
+    try {
+      await reload();
+    } catch (e) {
+      S.failed = 'Controlla la connessione e riprova. (' + e.message + ')';
+    }
+    S.loading = false;
     if (S.data) document.title = S.data.client.name + ' — Anteprima';
     render();
   };
+
+  /* Images come with links that expire after an hour. A page left open
+     longer than that refreshes itself when looked at again. */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || !C.remote || !S.data || S.loading) return;
+    if (Date.now() - (S.data.loadedAt || 0) < 45 * 60 * 1000) return;
+    reload().then(render, function () {});
+  });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', C.boot);
   else C.boot();

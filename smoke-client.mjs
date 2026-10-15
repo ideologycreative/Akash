@@ -78,7 +78,7 @@ function openWith(url, json) {
   return dom;
 }
 
-const client = openWith('https://cliente.test/cliente.html?c=' + token, doc);
+const client = openWith('https://cliente.test/cliente.html#c=' + token, doc);
 await settle(client.window);
 const W = client.window, D = W.document;
 const C = W.IDEC;
@@ -176,6 +176,7 @@ ok('un contenuto già pubblicato non offre gesti',
 const cardId = todoCard.dataset.id;
 const internalBefore = JSON.parse(W.localStorage.getItem(KEY)).posts.find((p) => p.id === cardId).internalNote;
 todoCard.querySelector('.cl-btn.primary').click();
+await settle(W, 30);
 const afterApprove = JSON.parse(W.localStorage.getItem(KEY)).posts.find((p) => p.id === cardId);
 ok('lo stato diventa approvato', afterApprove.status === 'approvato', afterApprove.status);
 ok('è registrato come fatto dal cliente',
@@ -188,6 +189,7 @@ const undo = Array.from(D.querySelectorAll('.cl-card[data-id="' + cardId + '"] b
   .find((b) => /Annulla/.test(b.textContent));
 ok('si può annullare', !!undo);
 undo.click();
+await settle(W, 30);
 ok('torna da rivedere',
    JSON.parse(W.localStorage.getItem(KEY)).posts.find((p) => p.id === cardId).status === 'da_approvare');
 
@@ -217,6 +219,11 @@ ok('non può approvare una bozza', !C.submit(token, draftId, 'approva', '').ok);
 ok('non può inventare un\'azione', !C.submit(token, cardId, 'pubblica', '').ok);
 ok('non può usare un token inventato', !C.submit('xxxxxxxx', cardId, 'approva', '').ok);
 ok('un token inventato non legge niente', C.read('xxxxxxxx') === null);
+ok('lo slug del cliente non apre niente', C.read(target.slug) === null);
+ok('un contenuto pubblicato non si riapre', (() => {
+  const pub = C.read(token).posts.find((p) => p.status === 'pubblicato');
+  return !pub || !C.submit(token, pub.id, 'annulla', '').ok;
+})());
 
 console.log('— la pagina si regge da sola —');
 const solo = new JSDOM(clientHtml, {
@@ -247,7 +254,20 @@ const SD = studioHit.window.document;
 ok('si ferma su una schermata di passaggio', !!SD.querySelector('.gate'));
 ok('non mostra la barra laterale', !SD.querySelector('.rail'));
 ok('non mostra nessun contenuto', !SD.querySelector('.card'));
-ok('indica la pagina giusta', /cliente\.html\?c=/.test((SD.querySelector('.gate-url') || {}).textContent || ''));
+ok('indica la pagina giusta', /cliente\.html#c=/.test((SD.querySelector('.gate-url') || {}).textContent || ''));
+
+console.log('\n— i link nel formato vecchio —');
+const old = openWith('https://cliente.test/cliente.html?c=' + token, doc);
+await settle(old.window);
+ok('un link ?c= apre ancora', old.window.document.querySelectorAll('.cl-card').length > 0);
+ok('e il token passa nel frammento, fuori dall\'indirizzo', old.window.location.search === '' &&
+   old.window.location.hash === '#c=' + token);
+const hashHit = new JSDOM(studioHtml, {
+  runScripts: 'dangerously', url: 'https://demo.test/index.html#c=' + token,
+  virtualConsole: quiet(), beforeParse(w) { w.localStorage.setItem(KEY, doc); }
+});
+await settle(hashHit.window);
+ok('lo studio si ferma anche con #c=', !!hashHit.window.document.querySelector('.gate') && !hashHit.window.document.querySelector('.rail'));
 
 console.log('\n' + (fails ? '✗ ' + fails + ' test falliti' : '✓ tutti i test passati'));
 process.exit(fails ? 1 : 0);

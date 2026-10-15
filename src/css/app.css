@@ -117,9 +117,34 @@ select.ctx, .ctx select {
   font-size: var(--fs-xs); font-weight: 600; color: var(--ink-3);
   padding: 0 4px; white-space: nowrap;
 }
-.saved .pip { width: 6px; height: 6px; border-radius: 50%; background: var(--st-approvato); }
-.saved[data-s="dirty"] .pip { background: var(--st-approvare); }
-.saved[data-s="error"] .pip { background: var(--st-revisione); }
+.saved .pip { width: 6px; height: 6px; border-radius: 50%; background: var(--st-approvato); flex: 0 0 auto; }
+button.saved { background: none; border: 0; cursor: default; text-align: left; font-family: inherit; }
+.saved[data-s="pending"] .pip,
+.saved[data-s="saving"] .pip { background: var(--st-approvare); }
+.saved[data-s="saving"] .pip { animation: pip-pulse 1s ease-in-out infinite; }
+.saved[data-s="offline"] .pip,
+.saved[data-s="error"] .pip,
+.saved[data-s="conflict"] .pip { background: var(--st-revisione); }
+.saved[data-s="offline"], .saved[data-s="error"] { cursor: pointer; color: var(--ink-2); }
+.saved[data-s="conflict"] { color: var(--ink-2); }
+@keyframes pip-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .saved[data-s="saving"] .pip { animation: none; } }
+
+/* Two people changed the same field: ask, never guess. Sits above
+   everything, including an open dialog, and does not block it. */
+.conflict-bar {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+  z-index: 700; width: min(620px, calc(100vw - 32px));
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  padding: 12px 14px; border-radius: 11px;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--st-revisione);
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  font-size: var(--fs-sm); line-height: 1.5;
+}
+.conflict-bar .cb-text { flex: 1 1 260px; min-width: 0; }
+.conflict-bar .cb-more { color: var(--ink-3); }
+.conflict-bar .cb-actions { display: flex; gap: 7px; margin-left: auto; }
 
 /* ── Tabs ──────────────────────────────────────────────── */
 
@@ -690,7 +715,7 @@ button.c-bl:hover { box-shadow: 0 1px 5px rgba(0,0,0,.3); }
 
 @media (max-width: 980px) {
   .rail { flex-basis: 56px; width: 56px; padding: 12px 8px 8px; align-items: center; }
-  .rail .nm, .rail .sub, .rail-item .rtxt, .rail-save .rtxt, .rail-lbl, .rail .saved { display: none; }
+  .rail .nm, .rail .sub, .rail-item .rtxt, .rail-save .rtxt, .rail-lbl, .rail .saved .rtxt { display: none; }
   .rail-brand { padding: 0 0 14px; }
   .rail-item { justify-content: center; padding: 9px 0; }
   .rail-item .n { position: absolute; margin: 0; transform: translate(14px,-12px); }
@@ -1151,6 +1176,33 @@ button.kpi:hover { border-color: var(--ink-4); }
 .gate-box h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -.03em; }
 .gate-box p { margin: 0; font-size: 13.5px; color: var(--ink-3); line-height: 1.6; }
 .gate-box .btn { margin-top: 5px; text-decoration: none; }
+.linkbox.off code { text-decoration: line-through; color: var(--ink-4); }
+
+/* Sign-in and first-run screens reuse the gate. */
+.gate-form { width: min(340px, 100%); display: flex; flex-direction: column; gap: 10px; margin-top: 8px; text-align: left; }
+.gate-form .field { display: flex; flex-direction: column; gap: 5px; font-size: var(--fs-xs); font-weight: 700; color: var(--ink-2); }
+.gate-form .btn.primary { justify-content: center; margin-top: 4px; }
+.gate-form .btn.ghost { align-self: center; }
+.gate-err { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; min-height: 1em; }
+.gate-err:empty { display: none; }
+.gate-box > .btn { min-width: 260px; justify-content: center; }
+.gate-note { min-height: 1.6em; }
+
+/* Invites waiting at sign-in */
+.invite-row { width: min(420px, 100%); display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 10px; text-align: left; }
+.invite-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.invite-text span { color: var(--ink-3); font-size: var(--fs-xs); }
+.invite-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+
+/* Team dialog */
+.team-me { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.team-list { display: flex; flex-direction: column; }
+.team-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 13px; }
+.team-row .tm-email { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.team-row .tm-role { font-size: var(--fs-xs); color: var(--ink-3); font-weight: 600; }
+.team-row.pending .tm-email { color: var(--ink-3); }
+.tm-email { font-weight: 600; }
+
 .gate-url {
   font-size: 11px; color: var(--ink-4); word-break: break-all;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin-top: 3px;
