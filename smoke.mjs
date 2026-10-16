@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 
+/* These suites test browser-only mode, whatever 00-config.js ships with. */
+const LOCAL = (w) => { w.IDEOLOGY_CONFIG = { supabaseUrl: '', supabaseKey: '' }; };
+
 const vc = new VirtualConsole();
 vc.on('jsdomError', (e) => { console.log('PAGE ERROR:', e.message, e.detail && e.detail.stack); });
 vc.on('error', (...a) => console.log('console.error:', ...a));
@@ -10,7 +13,7 @@ vc.on('log', () => {});
 const html = readFileSync('dist/index.html', 'utf8');
 const dom = new JSDOM(html, {
   runScripts: 'dangerously', pretendToBeVisual: true,
-  url: 'https://example.test/', virtualConsole: vc
+  url: 'https://example.test/', beforeParse: LOCAL, virtualConsole: vc
 });
 const { window } = dom;
 await new Promise((r) => {
@@ -476,6 +479,16 @@ ok('il link cliente punta a una pagina separata', (() => {
 ok('il token sta nel frammento, che non arriva mai a un server', new URL(A.clientUrl(A.S.clients[0])).search === '');
 ok('lo studio non ha più una modalità cliente interna',
    A.ui.lockedToClient === undefined && !('askRevision' in A));
+
+console.log('\n— configurazione pubblicata —');
+{
+  const cfg = readFileSync('src/js/00-config.js', 'utf8');
+  const key = (/supabaseKey:\s*'([^']*)'/.exec(cfg) || [])[1] || '';
+  ok('la chiave in 00-config.js non è una chiave segreta', !A.looksSecretKey(key) && !/^sb_secret_/i.test(key));
+  const csp = (/http-equiv="Content-Security-Policy" content="([^"]+)"/.exec(html) || [])[1] || '';
+  const url = (/supabaseUrl:\s*'([^']*)'/.exec(cfg) || [])[1] || '';
+  ok('la CSP permette proprio quel progetto', !url || csp.includes(new URL(url).origin), csp.slice(0, 120));
+}
 
 console.log('\n' + (fails ? '✗ ' + fails + ' test falliti' : '✓ tutti i test passati'));
 process.exit(fails ? 1 : 0);

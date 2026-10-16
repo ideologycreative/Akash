@@ -1,8 +1,8 @@
 /* ============================================================
    Ideology — where the data lives
 
-   Empty (as shipped): everything stays in this browser. Good for
-   trying the tool and for demos; nothing is shared.
+   Empty: everything stays in this browser. Good for trying the tool
+   and for demos; nothing is shared.
 
    Filled in: the studio and the client link use the Supabase
    project below, shared by everyone on the team.
@@ -18,6 +18,6 @@
    ============================================================ */
 
 window.IDEOLOGY_CONFIG = Object.assign({
-  supabaseUrl: '',
-  supabaseKey: ''
+  supabaseUrl: 'https://llzvsxjjmqnandwvwajw.supabase.co',
+  supabaseKey: 'sb_publishable_o-4IqYC7GUPL4hEB0RhFSg_Q-I5b-0i'
 }, window.IDEOLOGY_CONFIG || {});

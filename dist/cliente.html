@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-NnAYb6G7Rc0aaDqKJzqLbxyzS5s1m6nT215QKeFK8ts=' 'sha256-MIMMx8oFTEA8omW0c9QW5b4OGNGXnyed9/36ghLNjfA=' 'sha256-ds1Rcs5EnmNXBXe0Jcx8gpdL1DMYCQMlMtyCtlBooaE=' 'sha256-xl0gUwkRrh+UOr9h5vv0nL2WlgEenZUAJHAdBSWGFP4=' 'sha256-em83USAsiRSbk2Ztp9Ey2JnCZiUPli6pSUmDpl7fLGo=' 'sha256-oWCkjn2lvojS1j+nkmkoH2fpcG9B8IFBlkPIFI6iSfM=' 'sha256-VKR8Fsfhu3UEq1IKd74TwSU5GcY/qJy/cXs/eghMAKc='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-hwSvQ9t/x/EVg+QxMuHMUgAMhUx839jUAMUqwBqNFB4=' 'sha256-MIMMx8oFTEA8omW0c9QW5b4OGNGXnyed9/36ghLNjfA=' 'sha256-ds1Rcs5EnmNXBXe0Jcx8gpdL1DMYCQMlMtyCtlBooaE=' 'sha256-xl0gUwkRrh+UOr9h5vv0nL2WlgEenZUAJHAdBSWGFP4=' 'sha256-em83USAsiRSbk2Ztp9Ey2JnCZiUPli6pSUmDpl7fLGo=' 'sha256-oWCkjn2lvojS1j+nkmkoH2fpcG9B8IFBlkPIFI6iSfM=' 'sha256-VKR8Fsfhu3UEq1IKd74TwSU5GcY/qJy/cXs/eghMAKc='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https://llzvsxjjmqnandwvwajw.supabase.co https://*.supabase.co wss://llzvsxjjmqnandwvwajw.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Anteprima — Ideology</title>
 <meta name="description" content="Anteprima del piano editoriale. Ideology, ideology.it">
@@ -605,8 +605,8 @@ button { cursor: pointer; }
 /* ============================================================
    Ideology — where the data lives
 
-   Empty (as shipped): everything stays in this browser. Good for
-   trying the tool and for demos; nothing is shared.
+   Empty: everything stays in this browser. Good for trying the tool
+   and for demos; nothing is shared.
 
    Filled in: the studio and the client link use the Supabase
    project below, shared by everyone on the team.
@@ -622,8 +622,8 @@ button { cursor: pointer; }
    ============================================================ */
 
 window.IDEOLOGY_CONFIG = Object.assign({
-  supabaseUrl: '',
-  supabaseKey: ''
+  supabaseUrl: 'https://llzvsxjjmqnandwvwajw.supabase.co',
+  supabaseKey: 'sb_publishable_o-4IqYC7GUPL4hEB0RhFSg_Q-I5b-0i'
 }, window.IDEOLOGY_CONFIG || {});
 </script>
 <script>

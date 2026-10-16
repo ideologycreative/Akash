@@ -16,6 +16,9 @@
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 
+/* These suites test browser-only mode, whatever 00-config.js ships with. */
+const LOCAL = (w) => { w.IDEOLOGY_CONFIG = { supabaseUrl: '', supabaseKey: '' }; };
+
 const KEY = 'ideology.content.v1';
 const studioHtml = readFileSync('dist/index.html', 'utf8');
 const clientHtml = readFileSync('dist/cliente.html', 'utf8');
@@ -35,7 +38,7 @@ const settle = (w, ms = 900) => new Promise((r) => setTimeout(r, ms));
 /* ── 1. Seed a document with the studio ─────────────────── */
 
 const studio = new JSDOM(studioHtml, {
-  runScripts: 'dangerously', url: 'https://studio.test/', virtualConsole: quiet()
+  runScripts: 'dangerously', url: 'https://studio.test/', beforeParse: LOCAL, virtualConsole: quiet()
 });
 await settle(studio.window);
 const A = studio.window.IDE;
@@ -62,7 +65,7 @@ const doc = studio.window.localStorage.getItem(KEY);
 function openClient(url) {
   const dom = new JSDOM(clientHtml, {
     runScripts: 'dangerously', url, virtualConsole: quiet(),
-    beforeParse(window) {
+    beforeParse(window) { LOCAL(window);
       window.localStorage.setItem(KEY, window.__doc);
     }
   });
@@ -73,7 +76,7 @@ function openClient(url) {
 function openWith(url, json) {
   const dom = new JSDOM(clientHtml, {
     runScripts: 'dangerously', url, virtualConsole: quiet(),
-    beforeParse(window) { window.localStorage.setItem(KEY, json); }
+    beforeParse(window) { LOCAL(window); window.localStorage.setItem(KEY, json); }
   });
   return dom;
 }
@@ -227,7 +230,7 @@ ok('un contenuto pubblicato non si riapre', (() => {
 
 console.log('— la pagina si regge da sola —');
 const solo = new JSDOM(clientHtml, {
-  runScripts: 'dangerously', url: 'https://demo.test/cliente.html', virtualConsole: quiet()
+  runScripts: 'dangerously', url: 'https://demo.test/cliente.html', beforeParse: LOCAL, virtualConsole: quiet()
 });
 await settle(solo.window);
 ok('senza token e senza dati mostra l\'esempio',
@@ -247,7 +250,7 @@ ok('non mostra nessun contenuto', bad.window.document.querySelectorAll('.cl-card
 console.log('\n— lo studio non si apre da un link cliente —');
 const studioHit = new JSDOM(studioHtml, {
   runScripts: 'dangerously', url: 'https://demo.test/index.html?c=' + token,
-  virtualConsole: quiet(), beforeParse(w) { w.localStorage.setItem(KEY, doc); }
+  virtualConsole: quiet(), beforeParse(w) { LOCAL(w); w.localStorage.setItem(KEY, doc); }
 });
 await settle(studioHit.window);
 const SD = studioHit.window.document;
@@ -264,7 +267,7 @@ ok('e il token passa nel frammento, fuori dall\'indirizzo', old.window.location.
    old.window.location.hash === '#c=' + token);
 const hashHit = new JSDOM(studioHtml, {
   runScripts: 'dangerously', url: 'https://demo.test/index.html#c=' + token,
-  virtualConsole: quiet(), beforeParse(w) { w.localStorage.setItem(KEY, doc); }
+  virtualConsole: quiet(), beforeParse(w) { LOCAL(w); w.localStorage.setItem(KEY, doc); }
 });
 await settle(hashHit.window);
 ok('lo studio si ferma anche con #c=', !!hashHit.window.document.querySelector('.gate') && !hashHit.window.document.querySelector('.rail'));

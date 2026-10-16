@@ -18,11 +18,14 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 
+/* These suites test browser-only mode, whatever 00-config.js ships with. */
+const LOCAL = (w) => { w.IDEOLOGY_CONFIG = { supabaseUrl: '', supabaseKey: '' }; };
+
 const vc = new VirtualConsole();
 vc.on('jsdomError', (e) => console.log('ERRORE PAGINA:', e.message));
 
 const dom = new JSDOM(readFileSync('dist/index.html', 'utf8'), {
-  runScripts: 'dangerously', url: 'https://demo.test/', virtualConsole: vc
+  runScripts: 'dangerously', url: 'https://demo.test/', beforeParse: LOCAL, virtualConsole: vc
 });
 
 await new Promise((r) => setTimeout(r, 1200));
